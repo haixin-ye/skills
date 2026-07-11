@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="{{language}}">
+<head>
+  <meta charset="utf-8">
+  <title>{{project_name}} - Feasibility Assessment</title>
+  <link rel="stylesheet" href="feasibility-report.css">
+</head>
+<body>
+  <main>
+    <section class="cover">
+      <p class="eyebrow">IDEA FEASIBILITY ASSESSMENT</p>
+      <h1>{{project_name}}</h1>
+      <p class="subtitle">{{clear_product_description}}</p>
+      <div class="verdict {{verdict_class}}">
+        <span>Overall assessment</span>
+        <strong>{{verdict}}</strong>
+      </div>
+      <dl class="cover-meta">
+        <div><dt>Prepared</dt><dd>{{date}}</dd></div>
+        <div><dt>Research status</dt><dd>{{research_status}}</dd></div>
+      </dl>
+    </section>
+
+    <section class="summary page-break-after">
+      <h2>Executive Summary</h2>
+      <p class="lead">{{executive_summary}}</p>
+      <div class="scorecard">
+        <article><span>Technical feasibility</span><strong>{{technical_feasibility}}</strong><p>{{technical_reason}}</p></article>
+        <article><span>Delivery complexity</span><strong>{{delivery_complexity}}</strong><p>{{delivery_reason}}</p></article>
+        <article><span>Primary risk</span><strong>{{main_risk}}</strong><p>{{risk_reason}}</p></article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Product Definition</h2>
+      {{product_definition_html}}
+    </section>
+    <section>
+      <h2>Problem And Intended Value</h2>
+      {{problem_and_value_html}}
+    </section>
+    <section>
+      <h2>Verified Technical Foundations</h2>
+      {{technical_foundations_html}}
+    </section>
+    <section>
+      <h2>Existing Solutions And Differentiation</h2>
+      {{competitor_summary_html}}
+    </section>
+    <section>
+      <h2>Constraints And Risks</h2>
+      {{constraints_and_risks_html}}
+    </section>
+    <section>
+      <h2>Recommendation And Next Validation</h2>
+      {{recommendation_html}}
+      <div class="next-step">{{next_poc_html}}</div>
+    </section>
+    <section class="sources">
+      <h2>Sources</h2>
+      {{source_list_html}}
+    </section>
+  </main>
+</body>
+</html>
+

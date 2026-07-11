@@ -1,0 +1,11 @@
+sources:
+  - id: "src-001"
+    title: "{{source_title}}"
+    url: "{{source_url}}"
+    source_type: "official_documentation"
+    publisher: "{{publisher}}"
+    accessed_on: "{{date}}"
+    supports_claims: []
+    confidence: "high"
+    notes: ""
+

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Idear"
+  short_description: "Research product ideas before building"
+  default_prompt: "Use $idear to assess my product idea, research its feasibility, and prepare a handoff if it is viable."

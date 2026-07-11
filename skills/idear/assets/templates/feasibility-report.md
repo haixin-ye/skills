@@ -1,0 +1,53 @@
+---
+title: "{{project_name}}"
+subtitle: "Feasibility Assessment"
+date: "{{date}}"
+verdict: "{{verdict}}"
+---
+
+# {{project_name}}
+
+## Executive Verdict
+
+**Overall assessment:** {{verdict}}
+
+{{executive_summary}}
+
+| Dimension | Assessment | Why it matters |
+| --- | --- | --- |
+| Technical feasibility | {{technical_feasibility}} | {{technical_reason}} |
+| Delivery complexity | {{delivery_complexity}} | {{delivery_reason}} |
+| Main risk | {{main_risk}} | {{risk_reason}} |
+
+## Product Definition
+
+{{product_definition}}
+
+## Problem And Intended Value
+
+{{problem_and_value}}
+
+## Verified Technical Foundations
+
+{{technical_foundations}}
+
+## Existing Solutions And Differentiation
+
+{{competitor_summary}}
+
+## Constraints And Risks
+
+{{constraints_and_risks}}
+
+## Recommendation
+
+{{recommendation}}
+
+## Smallest Next Validation
+
+{{next_poc}}
+
+## Sources
+
+{{source_list}}
+

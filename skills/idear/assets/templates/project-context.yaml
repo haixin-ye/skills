@@ -1,0 +1,44 @@
+project:
+  name: "{{project_name}}"
+  slug: "{{slug}}"
+  stage: "clarification"
+  language: "{{language}}"
+  last_updated: "{{date}}"
+
+summary:
+  raw_idea: "{{raw_idea}}"
+  clear_product_description: "{{clear_product_description}}"
+  current_verdict: "undecided"
+
+requirements:
+  confirmed: []
+  hard_constraints: []
+  non_goals: []
+
+facts:
+  verified: []
+  reasoned_inferences: []
+  needs_poc: []
+
+research:
+  source_files:
+    - "sources.yaml"
+  closest_existing_solutions: []
+
+technical_direction:
+  status: "not_started"
+  recommended_path: null
+  alternatives: []
+
+risks: []
+open_questions: []
+decisions: []
+
+artifacts:
+  product_definition: "01-product-definition.md"
+  research_dossier: null
+  feasibility_report: null
+  technical_paths: null
+  initial_solution: null
+  ai_handoff: null
+

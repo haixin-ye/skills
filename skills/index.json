@@ -1,0 +1,32 @@
+{
+  "catalog_version": "1.0",
+  "repository_name": "skills",
+  "license": "Apache-2.0",
+  "skills": [
+    {
+      "name": "idear",
+      "path": "skills/idear",
+      "bundle_required": true,
+      "description": "Turn a rough software, tool, automation, or AI-product idea into a clarified product definition, evidence-backed feasibility report, and implementation-ready technical handoff.",
+      "triggers": [
+        "Can this idea be built?",
+        "Are there suitable APIs, permissions, or technologies?",
+        "Has someone already built this?",
+        "Find comparable products or GitHub projects.",
+        "Prepare a viable idea for later development."
+      ],
+      "tags": [
+        "product-discovery",
+        "feasibility",
+        "research",
+        "technical-selection",
+        "handoff"
+      ],
+      "compatibility": [
+        "OpenAI Codex",
+        "Claude Code",
+        "compatible Agent Skills hosts"
+      ]
+    }
+  ]
+}
