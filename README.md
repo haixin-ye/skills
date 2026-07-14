@@ -7,6 +7,8 @@
 
 **English** | [简体中文](README.zh-CN.md)
 
+
+
 ---
 
 ## 💡 A Note Before Building (About Idear)
@@ -22,6 +24,30 @@ Idear gives an agent a better job before implementation begins. It helps turn a 
 Whether you are exploring a new tool, an AI workflow, a local-first application, a developer product, or an automation that sounds just slightly impossible, Idear is designed to help you find the real answer before the project turns into a pile of code.
 
 ---
+
+Turn a rough product idea into a **source-backed feasibility decision** before an AI agent starts building it.
+
+## 🚀 Try Idear in 60 Seconds
+
+Give this repository path to a Skill-compatible agent:
+
+```text
+Install the complete Idear Skill from:
+https://github.com/haixin-ye/skills/tree/master/skills/idear
+
+Then use $idear to assess this idea before implementation:
+<describe your idea here>
+```
+
+Idear will clarify the product, verify the real APIs and constraints, compare existing solutions, and—if the idea is viable—prepare an implementation-ready handoff.
+
+| You start with | Idear leaves you with |
+| --- | --- |
+| “Can this be built?” | A sourced feasibility verdict with blockers and unknowns |
+| “Has anyone done this?” | Competitor and open-source analysis with meaningful differences |
+| “What should I build first?” | A risk-driven PoC, MVP scope, technical paths, and AI handoff |
+
+> If Idear helps you avoid building the wrong thing, please [star the repository](https://github.com/haixin-ye/skills) so more builders can find it.
 
 ## ✨ What Idear Does
 
@@ -83,12 +109,10 @@ If your agent supports GitHub-based Skill installation, paste this into Codex, C
 
 ```text
 Install the Idear Skill from:
-https://github.com/<OWNER>/skills/tree/main/skills/idear
+https://github.com/haixin-ye/skills/tree/master/skills/idear
 
 Install the complete directory, including references, assets, and agents metadata.
 ```
-
-Replace `<OWNER>` with this repository's GitHub owner after publication.
 
 ### Manual installation
 
@@ -131,3 +155,4 @@ When an agent is given this repository, it should read [`skills/index.json`](ski
 
 Licensed under the [Apache License, Version 2.0](LICENSE).
 
+If Idear is useful to you, [give it a star](https://github.com/haixin-ye/skills) and share the idea you evaluated in [GitHub Issues](https://github.com/haixin-ye/skills/issues).
