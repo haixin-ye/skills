@@ -7,6 +7,7 @@
 
 [English](README.md) | **简体中文**
 
+
 ---
 
 ## 💡 写在开始开发之前 (About Idear)
@@ -22,6 +23,30 @@ Idear 希望让 Agent 在开发之前承担一份更重要的工作：把一个�
 无论你在探索一个新工具、AI 工作流、本地优先应用、开发者产品，还是一个听起来稍微有点不可能的自动化想法，Idear 都会帮助你在项目变成一堆代码之前，先找到真实答案。
 
 ---
+
+
+
+## 🚀 60 秒开始使用 Idear
+
+把下面这段话交给支持 Skill 的 Agent：
+
+```text
+请安装完整的 Idear Skill：
+https://github.com/haixin-ye/skills/tree/master/skills/idear
+
+然后使用 $idear，在实现前评估这个想法：
+<在这里描述你的想法>
+```
+
+Idear 会帮助 Agent 明确产品定义、核验真实 API 与限制、比较已有方案；如果想法值得继续，还会准备可直接交给开发 Agent 的实现材料。
+
+| 你一开始只有 | Idear 最终会留下 |
+| --- | --- |
+| “这个能做吗？” | 带来源的可行性结论、阻碍与未知项 |
+| “有人做过吗？” | 竞品与开源方案分析，以及真正的差异点 |
+| “第一步该做什么？” | 风险驱动的 PoC、MVP 范围、技术路径与 AI 交接材料 |
+
+> 如果 Idear 帮你避免了做错方向，欢迎为[这个仓库点一个 Star](https://github.com/haixin-ye/skills)，让更多开发者看到它。
 
 ## ✨ Idear 能做什么
 
@@ -83,12 +108,10 @@ docs/idear/<date>-<idea>/
 
 ```text
 请从以下地址安装 Idear Skill：
-https://github.com/<OWNER>/skills/tree/main/skills/idear
+https://github.com/haixin-ye/skills/tree/master/skills/idear
 
 请安装完整目录，包括 references、assets 和 agents metadata。
 ```
-
-仓库发布后，将 `<OWNER>` 替换为实际 GitHub 用户名或组织名即可。
 
 ### 手动安装
 
@@ -131,3 +154,4 @@ $idear 我想做一个会自动响应游戏事件的小工具。它在技术上�
 
 本项目采用 [Apache License 2.0](LICENSE)。
 
+如果 Idear 对你有帮助，欢迎[点一个 Star](https://github.com/haixin-ye/skills)，也可以在 [GitHub Issues](https://github.com/haixin-ye/skills/issues) 分享你用它评估过的想法。
