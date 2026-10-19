@@ -10,12 +10,12 @@ summary:
   clear_product_description: "{{clear_product_description}}"
   current_verdict: "undecided"
   confirmation:
-    status: "pending"
-    current_revision: 0
-    confirmed_revision: null
-    confirmed_at: null
-    confirmation_note: null
-    confirmation_evidence_refs: []
+    confirmation_status: "pending" # Set atomically whenever semantic summary content changes.
+    current_revision: 0 # Increment only for semantic summary changes, never for display.
+    confirmed_revision: null # Historical last-approved revision; retain while newer content is pending.
+    confirmed_at: null # Evidence timestamp for confirmed_revision.
+    confirmation_note: null # Approval note for confirmed_revision.
+    confirmation_evidence_refs: [] # Evidence for confirmed_revision.
 
 requirements:
   confirmed: []
