@@ -29,6 +29,7 @@ const checks = [
   [solution, /(unresolved high-impact|high-impact unresolved)[\s\S]{0,120}(blocker|gate)/i, "solution keeps blockers explicit"],
   [handoff, /confirmed user decisions/i, "handoff separates confirmed user decisions"],
   [handoff, /confirmed requirements and success conditions/i, "handoff carries stable requirements and success conditions"],
+  [handoff, /Success criterion ID\s*\|\s*User success condition\s*\|\s*Requirement IDs\s*\|\s*Acceptance criterion IDs\s*\|\s*Source evidence \/ approval gate/i, "handoff carries each success condition's actual text and mappings"],
   [handoff, /agent recommendations/i, "handoff separates agent recommendations"],
   [handoff, /proposals/i, "handoff separates proposals"],
   [handoff, /assumptions/i, "handoff separates assumptions"],

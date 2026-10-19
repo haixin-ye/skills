@@ -101,6 +101,8 @@ The future development agent must be able to start planning without repeating ba
 - required PoCs and unresolved high-impact blockers that must be cleared first;
 - stale or superseded history that must not govern new work.
 
+Make `08-ai-handoff.md` self-contained for success semantics: reproduce each `SC-###` item's actual user success-condition text, linked requirement IDs, acceptance-criterion IDs, and source evidence or approval gate. An ID-only list or a pointer to `07-initial-solution.md` is insufficient because a new agent must understand each success condition without reconstructing it elsewhere.
+
 Include a change-authority matrix stating what the next agent may refine, what it must preserve, what requires user approval, and what requires validation evidence. A later agent may propose alternatives, but it must not overwrite a `user-confirmed` decision, hard constraint, or explicit non-goal without a new user decision and the normal invalidation process.
 
 ## Handoff contract

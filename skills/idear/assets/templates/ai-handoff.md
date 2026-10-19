@@ -19,6 +19,14 @@ Read `project-context.yaml` first, then this document, then the linked research 
 | --- | --- | --- | --- | --- |
 {{confirmed_requirement_rows}}
 
+### User Success Conditions
+
+Carry the user's actual confirmed wording in every row. An `SC-###` ID or link to another artifact is not a substitute for the success-condition text.
+
+| Success criterion ID | User success condition | Requirement IDs | Acceptance criterion IDs | Source evidence / approval gate |
+| --- | --- | --- | --- | --- |
+{{user_success_condition_rows}}
+
 ## Confirmed User Decisions
 
 | Decision node ID | Confirmed resolution | Confirmation evidence | Must preserve |
