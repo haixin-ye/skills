@@ -5,25 +5,35 @@ description: Turn a user's rough software, tool, automation, or AI-product idea 
 
 # Idear
 
-Idear is a three-stage, evidence-first product discovery workflow. It is not a generic brainstorming skill and it is not an implementation skill. Its purpose is to move a rough idea to a defensible go/no-go decision, then prepare a later development agent to take over with the correct context.
+Idear is an adaptive-depth, evidence-first product discovery workflow. It is not a generic brainstorming skill and it is not an implementation skill. Its purpose is to answer the user's actual decision at the smallest sufficient depth, from a bounded fact through a defensible go/no-go decision and later development handoff.
 
 Follow the user's language for all user-facing conversation and generated artifacts. Use concise, direct language. Distinguish verified facts from inferences and untested assumptions.
 
-## Operating Model
+## Route Before Creating Artifacts
 
-Users do not select stages or modes. Detect the current stage from the conversation and advance naturally. A user may add a constraint at any time; update the saved context, revisit affected conclusions, and do not retain conclusions that depended on the old constraint.
+Before creating any file or directory, read `references/scope-routing.md` and classify the request internally as `quick`, `focused`, or `full`. Do not ask the user to select a mode. Infer the shallowest depth that can answer the request, and honor an explicit request for a narrower answer or deeper discovery.
 
-The stages are:
+- `quick`: answer a bounded, low-risk fact inline; create no workspace by default.
+- `focused`: investigate only one named uncertainty; answer in chat by default. Create only `focused-assessment.md` and `sources.yaml` when persistence is materially useful or requested.
+- `full`: run product clarification, feasibility research, and the optional technical handoff below.
+
+Do not silently escalate a quick or focused request to full discovery. Complete the bounded request when possible, explain the unresolved broader decision, and offer full discovery. Begin it only if the original request authorized that scope or the user accepts.
+
+Across every depth, preserve the evidence, authorization, safety, and non-implementation boundaries in this file. Never present an inference or untested assumption as verified fact.
+
+The stage sections below describe `full` discovery. Detect its current stage from the conversation and advance naturally. A user may add a constraint at any time; update the saved context, revisit affected conclusions, and do not retain conclusions that depended on the old constraint.
+
+The full stages are:
 
 1. Product clarification
 2. Feasibility research and report
 3. Technical path and development handoff
 
-Do not begin implementation while using this skill. If the user asks to build after Stage 3, hand off to the relevant planning or implementation workflow using the generated handoff artifacts.
+Do not begin implementation at any depth while using this skill. If the user asks to build after Stage 3, hand off to the relevant planning or implementation workflow using the generated handoff artifacts.
 
-## Artifact Location
+## Full-Discovery Artifact Location
 
-At the start of Stage 1, create an idea workspace. Resolve its location in this order:
+This workspace rule applies only after routing to `full`. At the start of Stage 1, create an idea workspace. Resolve its location in this order:
 
 1. A path explicitly named by the user.
 2. `docs/idear/<YYYY-MM-DD>-<slug>/` in the active project repository.
@@ -158,7 +168,7 @@ Read `references/stage-3-handoff.md` before generating these artifacts.
 
 The next development agent should be instructed to read `project-context.yaml`, then `08-ai-handoff.md`, then any linked evidence before proposing implementation work.
 
-## Scope And Safety
+## Cross-Depth Scope And Safety
 
 - Keep research within legal, ethical, and authorized boundaries.
 - Surface security and privacy risk without giving instructions that would create unauthorized access or harm.
