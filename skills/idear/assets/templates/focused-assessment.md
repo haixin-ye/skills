@@ -2,7 +2,7 @@
 
 **Date:** {{date}}
 
-**decision_node / feasibility premise:** {{premise_id}}
+**Feasibility premise ID:** {{premise_id}}
 
 ## Question
 
@@ -14,6 +14,7 @@
 
 ## Decision Contract
 
+- **status:** {{status}} — required; allowed values: `queued`, `researching`, `resolved`, `needs_poc`, `deferred`, `out_of_scope`
 - **Decision this can change:** {{decision_it_can_change}}
 - **priority_rationale:** {{priority_rationale}}
 - **sufficient_evidence:** {{sufficient_evidence}}

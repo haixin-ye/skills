@@ -6,7 +6,7 @@
 
 ## Decision-Linked Research Queue
 
-Every material item must name an active `decision_node`; focused work without a tree uses a stable feasibility-premise ID in that field.
+Every material item must name an active `decision_node` from the full-discovery decision tree.
 
 | ID | decision_node | Research question | Decision it can change | Priority rationale | sufficient_evidence | fallback_poc / validation action | invalidation_condition | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -39,6 +39,14 @@ Use access status `accessible`, `partially_accessible`, or `inaccessible`; keep 
 | decision_node | Previous state | Research result | New state or recommendation | Evidence refs | Affected downstream nodes / artifacts |
 | --- | --- | --- | --- | --- | --- |
 {{decision_update_rows}}
+
+## Contradiction And Invalidation Transitions
+
+Complete this table whenever evidence overturns a `resolved` or `assumed` node. Preserve the previous resolution and evidence; do not use this table as a substitute for updating the authoritative decision tree.
+
+| Trigger finding / source IDs | Old node / kind | Previous status, resolution, and evidence | stale / superseded | Replacement node / new resolution | Change reason | Recursively stale dependent IDs | Affected artifact paths | Recomputed frontier | Summary / verdict action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+{{invalidation_transition_rows}}
 
 ## Items Requiring A Proof Of Concept
 

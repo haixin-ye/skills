@@ -46,6 +46,19 @@ Use statuses consistently:
 | `stale` | Previously active node or queued work invalidated by an upstream change. |
 | `superseded` | Historical user decision or constraint replaced by a newer node. |
 
+## Legacy workspace migration
+
+When a `full` workspace has a confirmed product definition or prior research but its `project-context.yaml` has no `decision_tree` (or only an empty tree created during upgrade), migrate the existing state before asking Stage 1 questions or starting Stage 2. Do not replace settled discovery with a blank tree.
+
+1. Read the existing `project-context.yaml`, confirmed `01-product-definition.md`, `decision-log.md`, research dossier, risk register, and cited source or PoC evidence that exists. Treat these as historical evidence; do not delete or rewrite them to look native to v2.
+2. Derive one stable node for every material confirmed requirement or value choice (`user_decision`), binding constraint or non-goal (`constraint`), externally checkable claim (`fact`), explicit working premise (`assumption`), and environment-dependent result (`experiment`). Also migrate material unresolved questions.
+3. Preserve each historical answer, rationale, prior status, timestamp when known, and artifact anchor in `resolution` and `evidence_refs`. Preserve superseded decisions as separate historical nodes linked to their replacements. Never collapse a decision history into only its latest answer.
+4. Assign `resolved` only to user-confirmed choices or conclusions with sufficient evidence; assign `assumed` only to an explicit accepted premise; route unverified external claims to `needs_research` and environment-specific claims to `needs_poc`. Do not promote prose to verified fact merely because it appeared in an old report.
+5. Infer `depends_on` only from explicit causal or traceability statements in the existing artifacts. When an edge is uncertain, preserve the uncertainty in the node rather than inventing a dependency. Validate the resulting DAG, then compute and persist the frontier.
+6. Record migration metadata under `decision_tree.migration`: `source_format`, `migrated_at`, `source_artifacts`, `history_preserved`, and any `conflicts`. Keep legacy summary lists in place for compatibility; the migrated tree becomes authoritative going forward.
+
+Migration that only changes representation does not alter semantic summary content and must not advance its revision or discard prior confirmation evidence. Carry forward an existing explicit confirmation with its evidence. If legacy state has explicit approval evidence but no v2 confirmation object, initialize `current_revision` and `confirmed_revision` to the same migration revision, retain the known approval timestamp and evidence refs, and do not invent a missing timestamp. If migration exposes a substantive contradiction, missing material value choice, or materially ambiguous constraint, record the conflict, apply the normal summary-revision rule, and ask only the highest-ranked user-owned frontier question needed to resolve it. Do not ask the user to repeat settled requirements, constraints, decisions, or scenarios. Researchable gaps belong to the agent, and environment-specific gaps belong to a PoC.
+
 ## Graph invariants
 
 The persisted dependency graph must remain a directed acyclic graph (DAG):

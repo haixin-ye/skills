@@ -4,7 +4,9 @@ Research from the position of an engineer trying to make a product decision, not
 
 ## Entry and scope
 
-Start from the latest confirmed product definition and current decision tree. For `full` discovery, every material investigation must name an active `decision_node`. For a bounded `focused` investigation that has no decision tree, assign a stable feasibility-premise ID such as `premise-001` and use it in place of a node link; do not create a full tree merely to satisfy this rule.
+Start from the latest confirmed product definition and current decision tree. If an existing `full` workspace has a confirmed definition but lacks a decision tree, perform **Legacy workspace migration** from `decision-tree.md` before research. Preserve settled history and do not repeat discovery unless migration exposes a substantive conflict.
+
+For `full` discovery, every material investigation must name an active `decision_node`. For a bounded `focused` investigation that has no decision tree, assign a stable feasibility-premise ID such as `premise-001` and use it in place of a node link; do not create a full tree merely to satisfy this rule.
 
 Do not research every possible feasibility dimension by default. Investigate only dimensions that can affect the user's verdict, principal risks, technical direction, next PoC, or recommended action. A descriptive topic without such a link is out of scope.
 
@@ -44,20 +46,32 @@ Do not research a low-value detail while a higher-ranked item could invalidate t
 3. Seek the highest available source tier that can support the exact claim.
 4. Compare evidence with the threshold; record conflicts, scope limits, version boundaries, and environmental dependencies.
 5. Mark the conclusion `verified`, `reasoned_inference`, or `needs_poc` according to `evidence-standards.md`.
-6. Update the linked decision node or premise, affected risk, and any dependent conclusions. Never leave a resolved item detached from the decision it changed.
+6. If the finding fills an unresolved item without contradicting current state, update the linked decision node or premise, affected risk, and dependent conclusions. If it overturns a resolved or assumed conclusion, use the replacement and recursive invalidation process below instead of overwriting the node.
 7. If the threshold cannot be met efficiently, stop desk research and record the smallest `fallback_poc` or validation action.
 8. Re-rank the queue and apply the stopping rule before opening another investigation.
 
 When comparable products or open-source implementations matter, determine how each solution actually works and whether it satisfies the hard constraints. Marketing text can establish a product claim, but not an unobserved architecture.
 
+## Evidence that overturns current state
+
+New evidence never silently overwrites a `resolved` or `assumed` node. When a material finding contradicts its current resolution, invoke the complete **Upstream changes and invalidation** procedure in `decision-tree.md`:
+
+1. Preserve the old answer, rationale, status, and evidence. Create a replacement node with a new stable ID and record the triggering finding, source IDs, `replacement_node_id`, and `change_reason`.
+2. Mark the contradicted `fact`, `assumption`, or `experiment` result `stale`. Evidence alone cannot rewrite a user's value choice or binding constraint: when a finding conflicts with a `user_decision` or `constraint`, keep that node active, create a new factual node that exposes the incompatibility, invalidate any dependent conclusion or assumption that claimed compatibility, and ask only the resulting user-owned frontier choice. Mark a `user_decision` or `constraint` `superseded` only if the user actually replaces it; then apply the same full invalidation procedure.
+3. Perform recursive invalidation across reverse `depends_on` edges with a `visited` set. Mark every direct and transitive active dependent `stale`, including queued `open`, `needs_research`, and `needs_poc` work; create replacement nodes for still-material pending work.
+4. Enumerate affected node IDs and every product-definition, research, competitor, risk, verdict, technical-path, solution, or handoff artifact that cites them. Tell the user which conclusions and artifact paths are no longer current.
+5. Recompute and persist the frontier, re-rank the research queue, and invalidate any summary, verdict, recommendation, or PoC plan that used the overturned branch. Apply the atomic summary-revision rule when semantic summary content changes.
+
+Record the complete transition in the research dossier. Do not issue or retain a verdict while an active conclusion depends on the stale or superseded branch.
+
 ## Evidence record
 
-Follow `evidence-standards.md` and preserve its source hierarchy. Record the corresponding source tier for every meaningful source:
+Follow `evidence-standards.md` and preserve its mutually exclusive source tiers. Record exactly one tier for every meaningful source:
 
-- `tier_1`: official documentation, standards, laws, API references, or official repository source code;
-- `tier_2`: official product documentation, release notes, issue trackers, or maintainer statements;
-- `tier_3`: peer-reviewed papers, standards bodies, or reputable technical research;
-- `tier_4`: independent analyses, tutorials, forums, or social posts used only as supplementary evidence.
+- `tier_1_authoritative_primary`: binding or normative authority for the claim, including enacted law or regulation, a ratified standard or specification, an official API/platform contract, or first-party source code;
+- `tier_2_first_party_operational`: first-party but non-normative product/help documentation, release notes, official issue trackers, or maintainer statements;
+- `tier_3_independent_research`: peer-reviewed research, original empirical work, or reputable independent technical testing;
+- `tier_4_secondary`: independent analysis, tutorials, forums, or social posts used only as supplementary or discovery evidence.
 
 For each source record its URL, title, publisher, source type, source tier, access date, `access_status` (`accessible`, `partially_accessible`, or `inaccessible`), claims supported, and confidence. For each material finding record its claim status (`verified`, `reasoned_inference`, or `needs_poc`), source IDs, scope/version, uncertainty, and freshness risk.
 
