@@ -1,20 +1,71 @@
-# Stage 2: Feasibility Research
+# Stage 2: Decision-Driven Feasibility Research
 
-Research from the position of an engineer trying to build the product, not from the position of a commentator describing it.
+Research from the position of an engineer trying to make a product decision, not from the position of a commentator describing a topic. Research is justified only when it can resolve an active decision-tree node or test an explicit feasibility premise.
+
+## Entry and scope
+
+Start from the latest confirmed product definition and current decision tree. For `full` discovery, every material investigation must name an active `decision_node`. For a bounded `focused` investigation that has no decision tree, assign a stable feasibility-premise ID such as `premise-001` and use it in place of a node link; do not create a full tree merely to satisfy this rule.
+
+Do not research every possible feasibility dimension by default. Investigate only dimensions that can affect the user's verdict, principal risks, technical direction, next PoC, or recommended action. A descriptive topic without such a link is out of scope.
+
+## Define each research item before searching
+
+Create a research item for each material investigation and record:
+
+- `decision_node`: the active decision-tree node ID, or the explicit feasibility-premise ID for focused work;
+- `decision_it_can_change`: the verdict, recommendation, constraint classification, risk rating, path choice, or downstream decision that could change;
+- `research_question`: a testable question rather than a broad topic;
+- `sufficient_evidence`: the evidence threshold that would resolve or classify the item, including the source quality, coverage, recency, and environment specificity required;
+- `fallback_poc`: the smallest PoC or validation action to use if desk research cannot meet the threshold;
+- `invalidation_condition`: the upstream decision, version, policy, environment, assumption, or contrary evidence that would make the conclusion stale;
+- `priority_rationale`: how the item can change the recommendation, unblock downstream decisions, or reduce expensive risk;
+- `status`: `queued`, `researching`, `resolved`, `needs_poc`, `deferred`, or `out_of_scope`.
+
+Do not let a source discovered during browsing silently broaden the queue. Add a new research item only when it has a decision or premise link and outranks remaining work under the rules below.
+
+## Priority order
+
+Rank items by their ability to change the recommendation, unblock downstream decisions, and reduce costly or irreversible risk. Within that decision value, prefer:
+
+1. potential blockers against a hard constraint;
+2. facts that can reverse the feasibility verdict;
+3. permissions, security, privacy, compliance, legal, or licensing constraints;
+4. the existence of a core technical capability or required integration;
+5. the largest remaining environment or operational uncertainty;
+6. differentiation from the closest credible alternative;
+7. ordinary implementation or descriptive detail.
+
+Do not research a low-value detail while a higher-ranked item could invalidate the whole direction. Re-rank after every material finding because a resolved blocker may expose a new frontier.
 
 ## Research sequence
 
-1. Convert the product definition into testable prerequisites.
-2. Find primary evidence for each prerequisite.
-3. Identify comparable products and open-source implementations.
-4. Determine how each comparable solution actually works and whether it satisfies the hard constraints.
-5. Identify permissions, operational dependencies, costs, security concerns, and licensing constraints.
-6. Separate confirmed capability from untested integration risk.
-7. Propose the smallest proof-of-concept for the highest-risk premise.
+1. Read the linked node or premise, its dependencies, impact, and current evidence.
+2. Define the research item and its sufficient-evidence threshold before searching.
+3. Seek the highest available source tier that can support the exact claim.
+4. Compare evidence with the threshold; record conflicts, scope limits, version boundaries, and environmental dependencies.
+5. Mark the conclusion `verified`, `reasoned_inference`, or `needs_poc` according to `evidence-standards.md`.
+6. Update the linked decision node or premise, affected risk, and any dependent conclusions. Never leave a resolved item detached from the decision it changed.
+7. If the threshold cannot be met efficiently, stop desk research and record the smallest `fallback_poc` or validation action.
+8. Re-rank the queue and apply the stopping rule before opening another investigation.
+
+When comparable products or open-source implementations matter, determine how each solution actually works and whether it satisfies the hard constraints. Marketing text can establish a product claim, but not an unobserved architecture.
+
+## Evidence record
+
+Follow `evidence-standards.md` and preserve its source hierarchy. Record the corresponding source tier for every meaningful source:
+
+- `tier_1`: official documentation, standards, laws, API references, or official repository source code;
+- `tier_2`: official product documentation, release notes, issue trackers, or maintainer statements;
+- `tier_3`: peer-reviewed papers, standards bodies, or reputable technical research;
+- `tier_4`: independent analyses, tutorials, forums, or social posts used only as supplementary evidence.
+
+For each source record its URL, title, publisher, source type, source tier, access date, `access_status` (`accessible`, `partially_accessible`, or `inaccessible`), claims supported, and confidence. For each material finding record its claim status (`verified`, `reasoned_inference`, or `needs_poc`), source IDs, scope/version, uncertainty, and freshness risk.
+
+An inaccessible page, search snippet, unsourced summary, or low-tier source alone cannot support a `verified` finding. Treat it as a discovery lead, find accessible supporting evidence, or classify the conclusion as inference or `needs_poc`. Re-verify drift-prone product, API, policy, pricing, maintenance, availability, and regulatory claims with current evidence.
 
 ## Feasibility dimensions
 
-Assess each relevant dimension separately:
+Assess a dimension only when it is linked to a material node or premise:
 
 - Technical: required capability exists and can be combined.
 - Platform and permissions: operating system, browser, mobile, cloud, or API policy permits it.
@@ -23,6 +74,20 @@ Assess each relevant dimension separately:
 - Legal and licensing: use, redistribution, data acquisition, and dependencies are permitted.
 - Product: the pain is real and the idea differs meaningfully from existing solutions.
 - Delivery: an MVP can be scoped and validated within a realistic effort.
+
+## Stopping rule
+
+After each material finding and before expanding the queue, ask whether additional evidence has a realistic chance of changing any of:
+
+- the feasibility verdict;
+- a principal risk or blocker;
+- the recommended technical direction;
+- the next PoC or validation action;
+- the recommended action for the user.
+
+Stop expanding research when the answer is no for every item. Also stop desk research on an individual item when its predefined sufficient-evidence threshold is met, or when further browsing is less informative than its fallback PoC. Do not continue merely to make the dossier look comprehensive.
+
+Before completing Stage 2, record the `stopping_rationale`, remaining uncertainty, deferred or out-of-scope items, and why none justifies more research now. A residual high-impact uncertainty must become `needs_poc`, a named condition on the verdict, or a reason the verdict cannot yet be issued; it must not disappear into prose.
 
 ## Verdict vocabulary
 

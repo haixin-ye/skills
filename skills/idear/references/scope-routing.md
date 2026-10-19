@@ -29,10 +29,11 @@ Use `quick` only when the answer can stand alone without resolving product goals
 Use `focused` for exactly one named uncertainty. Keep every research step tied to that question.
 
 1. Restate the question and binding constraints briefly.
-2. Ask at most one clarification only when different answers would materially change the conclusion and a conditional answer would be misleading. Otherwise proceed with explicit conditions.
-3. Investigate only the relevant capability, versions, APIs or mechanisms, permissions, limitations, and validation needed to resolve the named uncertainty.
-4. Apply `references/evidence-standards.md`: classify material findings as `verified`, `reasoned_inference`, or `needs_poc`, and use current primary sources for drift-prone claims.
-5. Give a concise chat conclusion, sources, and the smallest validation that removes the remaining uncertainty.
+2. Assign the uncertainty a stable feasibility-premise ID and apply the research-item contract and stopping rule in `references/stage-2-research.md`; this link does not create a full decision tree or Stage 2 workspace.
+3. Ask at most one clarification only when different answers would materially change the conclusion and a conditional answer would be misleading. Otherwise proceed with explicit conditions.
+4. Investigate only the relevant capability, versions, APIs or mechanisms, permissions, limitations, and validation needed to resolve the named uncertainty.
+5. Apply `references/evidence-standards.md`: classify material findings as `verified`, `reasoned_inference`, or `needs_poc`, and use current primary sources for drift-prone claims.
+6. Give a concise chat conclusion, sources, and the smallest validation that removes the remaining uncertainty.
 
 Do not add product clarification, market or competitor research, a complete risk register, a feasibility PDF, technical-path comparison, or a development handoff unless the user separately asks for broader discovery.
 

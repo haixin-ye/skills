@@ -3,8 +3,10 @@ sources:
     title: "{{source_title}}"
     url: "{{source_url}}"
     source_type: "official_documentation"
+    source_tier: "tier_1"
     publisher: "{{publisher}}"
     accessed_on: "{{date}}"
+    access_status: "accessible"
     supports_claims: []
     confidence: "high"
     notes: ""

@@ -99,3 +99,13 @@ These failures are the RED evidence for the v2 changes below.
 - Every material conclusion is traceable to evidence, explicit reasoning, an assumption, or a PoC.
 - A changed upstream decision invalidates dependent conclusions rather than silently overwriting them.
 - The skill never begins implementation.
+
+## Stage 2: Decision-driven research assertions
+
+Apply these assertions to both the focused investigation and the full-discovery research scenarios:
+
+- Every material investigation names the decision-tree node or explicit feasibility premise that caused it. Research without either link is out of scope.
+- Every research item states which decision or recommendation it could change, what evidence would be sufficient, the fallback PoC or validation action when desk research is insufficient, and the condition that would invalidate its conclusion.
+- Research order is driven first by the ability to change the recommendation, unblock downstream decisions, or reduce expensive risk; ordinary descriptive detail cannot displace a decision-critical item.
+- The investigation stops expanding when additional evidence is unlikely to change the verdict, principal risks, technical direction, next PoC, or recommended action. The dossier records that stopping rationale and any residual uncertainty.
+- Evidence records preserve source tier, access date, access status, claim status, and uncertainty; inaccessible or low-tier evidence cannot silently support a `verified` conclusion.

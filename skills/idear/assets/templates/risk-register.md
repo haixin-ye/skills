@@ -1,6 +1,8 @@
 # Risk Register: {{project_name}}
 
-| ID | Risk | Category | Severity | Evidence status | Mitigation | Validation action | Owner / timing |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+Every material risk must link to an active `decision_node` or an explicit focused feasibility-premise ID. Reassess the risk when its `invalidation_condition` occurs.
+
+| ID | decision_node | Risk | Category | Severity | Evidence / claim status | Source IDs | Uncertainty | invalidation_condition | Mitigation | validation action | Owner / timing |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 {{risk_rows}}
 
