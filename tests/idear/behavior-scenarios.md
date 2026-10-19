@@ -115,3 +115,18 @@ Apply these assertions to both the focused investigation and the full-discovery 
 - A persisted focused assessment records required research-item `status` using only `queued`, `researching`, `resolved`, `needs_poc`, `deferred`, or `out_of_scope`.
 - Full-discovery `research-dossier.md` and `risk-register.md` accept decision-node IDs only; focused feasibility-premise IDs remain exclusive to `focused-assessment.md`.
 - Every source has exactly one mutually exclusive tier, and `sources.yaml` uses neutral placeholders plus explicit allowed values for source type, tier, access status, and confidence rather than pre-asserting an official, accessible, high-confidence source.
+
+## Stage 3: Development-handoff traceability assertions
+
+Apply these assertions when the user elects to pursue a full-discovery idea and asks for an implementation approach or a development handoff:
+
+- Every user success condition receives a stable success-criterion ID and maps to at least one objective acceptance criterion. Each acceptance criterion identifies its architecture element, planned test or existing evidence, and current gate status; an unspecified threshold remains an explicit approval gate rather than an invented number.
+- Every technical option and the recommended direction name the governing decision-node and hard-constraint IDs. Direction status is exactly `proposed`, `recommended`, or `user-confirmed`; a recommendation never masquerades as user approval.
+- `project-context.yaml` stays synchronized with technical-direction status and Stage 3 artifact paths. A `user-confirmed` path is backed by a resolved user-decision node and confirmation evidence, not only an artifact label.
+- Every active decision-tree node with status `needs_poc` maps to at least one ordered PoC task or gate, and every PoC task maps back to a `needs_poc` node. Each mapping states the hypothesis, success/failure threshold, evidence output, decision unlocked, and dependencies.
+- Every unresolved high-impact node remains visible as a blocker or gate, including the affected architecture, acceptance criteria, or implementation work and the exact exit condition. Stage 3 does not describe the handoff as implementation-ready while a blocking condition remains unsatisfied.
+- The canonical traceability table connects each material decision node or success criterion through a product requirement, architecture element, acceptance criterion, and validation evidence or planned test. IDs remain consistent across `06-technical-paths.md`, `07-initial-solution.md`, and `08-ai-handoff.md`.
+- The handoff separates user-confirmed decisions and constraints, agent recommendations, proposals, assumptions, and required PoCs. It tells the next development agent what it may refine, what it must preserve, what needs user approval, and what must be validated first without repeating settled discovery.
+- Unresolved high-impact blockers are not mixed with deliberately deferred or lower-impact open items; both remain visible with ownership and revisit conditions.
+- The self-contained handoff carries confirmed product requirements and user success conditions with their stable IDs; the next agent does not need to reconstruct them from narrative prose.
+- Stage 3 uses `TBD` or an explicit gate for unsupported implementation detail. It creates planning and validation artifacts only, does not generate code or perform PoCs, and does not imply implementation authorization.
