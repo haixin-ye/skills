@@ -28,7 +28,7 @@ Classify uncertainty by ownership:
 - label safe working premises as `assumption` nodes, and never silently assume a high-impact user value;
 - route environment-dependent outcomes to `experiment` nodes with `needs_poc` and the smallest discriminating validation.
 
-After every material answer, update the node, recompute the frontier, and check whether dependent conclusions changed. If an upstream premise changes, apply the recursive invalidation process in `decision-tree.md`: preserve the replaced node as `superseded`, mark all direct and transitive dependent conclusions `stale`, tell the user which nodes and artifacts are affected, then recompute the frontier.
+After every material answer, update the node, recompute the frontier, and check whether dependent conclusions changed. If an upstream premise changes, apply the recursive invalidation process in `decision-tree.md`: preserve a replaced `user_decision` or `constraint` as `superseded`; mark a replaced `fact`, `assumption`, or `experiment` as `stale`; mark all direct and transitive dependent conclusions `stale`; preserve each old resolution and add its replacement node ID and change reason; tell the user which nodes and artifacts are affected; then recompute the frontier.
 
 ## Definition quality check
 
@@ -45,5 +45,9 @@ Also verify that every high-impact node is `resolved`, explicitly `assumed`, del
 
 ## User confirmation
 
-Present a compact one-paragraph product description plus confirmed decisions, constraints, non-goals, assumptions, research items, PoCs, deferred/out-of-scope items, and any remaining lower-impact open questions. Ask for correction or approval. A user may tell the agent to proceed with assumptions; record that authorization and its evidence explicitly. Only then mark Stage 1 complete.
+Present a compact one-paragraph product description plus confirmed decisions, constraints, non-goals, assumptions, research items, PoCs, deferred/out-of-scope items, and any remaining lower-impact open questions. Ask for correction or explicit approval.
+
+If the user corrects the summary, apply the correction to the decision tree, perform recursive invalidation, recompute the frontier, resolve or classify any newly exposed high-impact nodes, and update the affected artifacts. Then present the updated summary and obtain explicit confirmation. A correction is not itself confirmation of the revised definition.
+
+If the user authorizes proceeding with assumptions, that authorization closes Stage 1 only when the user also approves the updated summary that displays those assumptions. Record both the assumption authorization and the summary approval as evidence. Only then mark Stage 1 complete.
 

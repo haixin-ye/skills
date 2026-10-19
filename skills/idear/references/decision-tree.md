@@ -26,7 +26,7 @@ Every node must persist all of these fields:
 - `kind`: exactly one of `user_decision`, `fact`, `assumption`, `experiment`, or `constraint`.
 - `depends_on`: IDs whose current answers must be valid before this node can be answered or relied upon.
 - `status`: exactly one of `open`, `resolved`, `assumed`, `needs_research`, `needs_poc`, `deferred`, `out_of_scope`, `stale`, or `superseded`.
-- `resolution`: the current answer and rationale, or `null` while unanswered. For a replacement or reversal, name the new node ID here rather than overwriting history.
+- `resolution`: the current answer and rationale, or `null` while unanswered. Once answered, preserve the original answer and rationale. For a replacement or reversal, add the replacement node ID and change reason alongside that original resolution; never overwrite the old answer.
 - `impact`: at least `level` (`high`, `medium`, or `low`) and a short rationale. Assess the ranking factors below when assigning it.
 - `evidence_refs`: conversation turns, source IDs, artifact anchors, or PoC results that support the resolution. Never use an untraceable conclusion.
 
@@ -82,11 +82,21 @@ Ask one question per round by default. Ask at most three only when all are indep
 Never edit history to make a reversal look as though the old decision never existed. When an upstream decision, constraint, fact, assumption, or experiment result changes:
 
 1. Create and resolve the replacement node with a new stable ID.
-2. Mark a replaced user decision or constraint `superseded`; mark a replaced fact, assumption, or experiment result `stale`. Its `resolution` must point to the replacement ID and state why it changed.
+2. Mark a replaced user decision or constraint `superseded`; mark a replaced fact, assumption, or experiment result `stale`. Preserve the old node's original resolution answer and rationale, then add `replacement_node_id` and `change_reason` to that resolution record. Never replace the original no-cloud decision, fact, assumption, or experiment result with the new answer.
 3. Traverse `depends_on` recursively from the replaced node. Mark every direct and transitive dependent active conclusion `stale`, even when it appears likely to remain true.
 4. Find every artifact that cites an affected node or repeats its conclusion. List the affected node IDs and artifact paths to the user before issuing a revised conclusion.
 5. Reclassify each affected uncertainty as a new user decision, fact for research, assumption, experiment for PoC, constraint, deferred item, or out-of-scope item. Preserve stale nodes and create new active nodes rather than changing the historical entries back to current.
 6. Recompute the frontier and refresh any summary or verdict that used the invalidated branch.
+
+For example, a superseded constraint keeps its original answer while recording why and where it was replaced:
+
+```yaml
+resolution:
+  answer: "Cloud services are forbidden."
+  rationale: "The user set this as a binding constraint."
+  replacement_node_id: "C-004"
+  change_reason: "The user now permits a cloud relay when direct LAN connectivity fails."
+```
 
 For a change that crosses the LAN/cloud boundary or a similar system boundary, explicitly inspect authentication, identity, networking, privacy, cost, deployment, competitors, architecture, risks, and PoCs. List only the domains and artifacts actually affected, but do not omit a transitive dependency merely because it lives in a later-stage artifact.
 
