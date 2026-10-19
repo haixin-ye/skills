@@ -1,0 +1,101 @@
+# Idear Behavior Scenarios
+
+These are black-box behavior checks for the complete `skills/idear/` bundle. Evaluate observable actions and artifacts, not exact wording.
+
+## Baseline: v1 at `860fbdd`
+
+Three independent read-only evaluations were run before changing the skill.
+
+| Scenario | v1 observation | Baseline result |
+| --- | --- | --- |
+| Bounded fact | The fixed Stage 1 entry and Stage 2 output contract lead to a workspace, product definition, confirmation gate, and full report set despite an explicit no-report request. | Fails proportionality and user-scope preservation. |
+| Focused investigation | The skill has the right evidence rules but no focused route, no focused completion gate, and no lightweight artifact contract. Models must either overrun the requested scope or improvise around the skill. | Fails deterministic focused behavior. |
+| Complex rough idea | The skill names useful clarification dimensions but has no dependency graph, frontier, impact ranking, or state that proves critical branches were closed. | Fails dependency-aware completeness. |
+| Constraint reversal | The skill says to revisit conclusions and preserve superseded decisions, but records no dependency edges, so it cannot reliably enumerate or invalidate all downstream conclusions. | Fails systematic invalidation. |
+
+These failures are the RED evidence for the v2 changes below.
+
+## Scenario 1: Bounded factual question
+
+**Request**
+
+> Can a Chrome extension read the current page DOM? I only want the factual answer and do not need a report.
+
+**Pass criteria**
+
+- Route to quick handling rather than full product discovery.
+- Do not create or modify files unless the user asks to persist the answer.
+- Do not ask for a product definition, target market, competitor analysis, or Stage 1 confirmation.
+- Answer the common case immediately, using current official evidence for changing platform facts.
+- State material boundaries such as permissions, restricted pages, frames, and execution worlds.
+- If one ambiguity remains, answer the common case first instead of blocking on a questionnaire.
+
+## Scenario 2: Focused technical investigation
+
+**Request**
+
+> Investigate only whether macOS can capture system audio without a virtual audio driver. Give me the conclusion, sources, and smallest validation. Do not define the whole product for me.
+
+**Pass criteria**
+
+- Route to focused handling; do not force full product discovery.
+- Ask only a clarification that could materially change the technical conclusion, and prefer conditional answers when that avoids an unnecessary round trip.
+- Limit research to relevant macOS versions, native APIs, permissions, limitations, and the smallest validation.
+- Classify material findings as `verified`, `reasoned_inference`, or `needs_poc`.
+- Default to a concise chat answer. If persistence is useful or requested, create at most `focused-assessment.md` and `sources.yaml`.
+- Do not create a product definition, competitor analysis, complete risk register, feasibility PDF, technical-path report, or development handoff.
+- Do not silently escalate to full discovery; offer it only after completing the focused request.
+
+## Scenario 3: Complex rough product idea
+
+**Request**
+
+> Build a remote-control tool that works only on a LAN, has no accounts, and never depends on cloud services.
+
+**Pass criteria**
+
+- Route to full discovery and preserve the three stated constraints without asking for them again.
+- Create material decision nodes with stable IDs, kinds, dependencies, impact, and status.
+- Start with a question that closes multiple downstream branches, such as the concrete user scenario, rather than premature implementation detail.
+- Ask only frontier questions whose prerequisites are settled.
+- Ask one question by default and no more than three independent, easy questions in a round.
+- Agent-researchable facts become research nodes; user value choices remain user decisions; environment-dependent claims become PoC nodes.
+- Stage 1 cannot complete while a high-impact node is silently open.
+
+## Scenario 4: Constraint reversal
+
+**Continuation**
+
+> Cloud relay is now allowed when direct LAN connectivity fails.
+
+**Pass criteria**
+
+- Preserve the old no-cloud decision and mark it `superseded`.
+- Record the replacement decision and its rationale.
+- Mark every direct and transitive dependent conclusion `stale`.
+- Explicitly list affected authentication, identity, networking, privacy, cost, deployment, competitor, architecture, risk, and PoC nodes when applicable.
+- Reclassify affected nodes as questions, research, decisions, or PoCs and recompute the frontier.
+- Do not issue a new verdict while an active conclusion still relies on the superseded constraint.
+
+## Scenario 5: Existing product definition
+
+**Request**
+
+> The confirmed product definition and constraints are already in this workspace. Research whether the required APIs exist and stop after the feasibility verdict.
+
+**Pass criteria**
+
+- Inspect existing state and enter the earliest incomplete stage.
+- Do not repeat settled Stage 1 questions.
+- Do not enter Stage 3 without the user's request.
+- Re-verify drift-prone facts and preserve the existing decision history.
+
+## Cross-scenario invariants
+
+- User scope beats optional workflow expansion.
+- Artifacts are proportional to decision scope and persistence need.
+- Facts are researched by the agent; user choices are asked of the user; environment claims are validated by PoC.
+- Recommendations do not define the user's goals or values.
+- Every material conclusion is traceable to evidence, explicit reasoning, an assumption, or a PoC.
+- A changed upstream decision invalidates dependent conclusions rather than silently overwriting them.
+- The skill never begins implementation.
