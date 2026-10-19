@@ -64,9 +64,55 @@ research:
   closest_existing_solutions: []
 
 technical_direction:
-  status: "not_started"
-  recommended_path: null
-  alternatives: []
+  selection_lifecycle: "not-selected"
+  recommended_path_id: null
+  selected_path_id: null
+  recommendation_pending_gate_ids: []
+  allowed_selection_lifecycles:
+    - "not-selected"
+    - "recommended-not-confirmed"
+    - "user-confirmed"
+  allowed_candidate_provenance:
+    - "proposed"
+    - "recommended"
+    - "user-confirmed"
+  candidate_paths:
+    - path_id: "{{path_id}}"
+      provenance: "{{proposed_recommended_or_user-confirmed}}"
+      governing_node_ids: []
+      evidence_refs: []
+      invalidation_condition: "{{invalidation_condition}}"
+
+stage3:
+  schema_version: 1
+  state_revision: 0
+  handoff_readiness: "not-started"
+  allowed_handoff_readiness:
+    - "not-started"
+    - "blocked"
+    - "conditional"
+    - "ready-for-planning"
+  governing_direction:
+    node_id: null
+    evidence_refs: []
+  ordered_blockers_and_gates:
+    - id: "{{gate_id}}"
+      exit_condition: "{{exit_condition}}"
+      next_action: "{{next_action}}"
+      order: 1
+      type: "{{summary_confirmation_approval_validation_or_blocker}}"
+      status: "{{open_or_cleared}}"
+      source_node_id: null
+      impact: "{{impact}}"
+      affected_path_ids: []
+      affected_architecture_element_ids: []
+      affected_acceptance_criterion_ids: []
+      owner: "{{owner}}"
+      evidence_refs: []
+  artifact_state_revisions:
+    technical_paths: 0
+    initial_solution: 0
+    ai_handoff: 0
 
 risks: []
 open_questions: [] # Derived from active open decision-tree nodes.

@@ -4,9 +4,14 @@
 
 Read `project-context.yaml` first, then this document, then the linked research and source artifacts. The decision tree is authoritative for current node state. Do not use stale or superseded branches as current instructions.
 
-- **Latest confirmed product-summary revision:** {{confirmed_summary_revision}}
+- **Stage 3 state revision:** {{stage3_state_revision}}
+- **Current summary revision:** {{current_summary_revision}}
+- **Confirmed summary revision:** {{confirmed_summary_revision}}
+- **Summary confirmation status:** {{pending_or_confirmed}}
 - **Handoff readiness:** {{blocked_conditional_or_ready_for_planning}}
-- **Current direction / status:** {{path_id_and_proposed_recommended_or_user-confirmed}}
+- **Selection lifecycle:** {{not-selected_recommended-not-confirmed_or_user-confirmed}}
+- **Selected path ID:** {{selected_path_id_or_none}}
+- **Recommended path ID:** {{recommended_path_id_or_none}}
 - **Implementation authorized:** no; this handoff is a planning input
 
 ## Product Summary
@@ -69,11 +74,11 @@ Recommendations remain advisory until the user accepts them.
 | --- | --- | --- | --- | --- |
 {{validated_finding_rows}}
 
-## Unresolved High-Impact Blockers And Gates
+## Ordered Blocker And Gate Registry
 
-| Gate ID | Source node ID / status | Affected path, architecture, acceptance, or work | Owner | Exact exit condition | Next action |
-| --- | --- | --- | --- | --- | --- |
-{{high_impact_gate_rows}}
+| Order | Gate ID | Type / status | Source node ID | Impact | Affected path / architecture / acceptance / work IDs | Owner | Exact exit condition | Evidence refs | Next action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+{{ordered_gate_rows}}
 
 Do not plan dependent irreversible work until its gate is cleared.
 
@@ -93,11 +98,17 @@ Do not plan dependent irreversible work until its gate is cleared.
 
 ## Traceability Snapshot
 
-The canonical table lives in `07-initial-solution.md`; this snapshot must use the same IDs.
+The canonical requirement-and-success table lives in `07-initial-solution.md`; this snapshot must carry the same stable trace and governing IDs.
 
-| Upstream node or success criterion ID | Product requirement ID | Architecture element ID | Acceptance criterion ID | Validation evidence or planned test | Gate/status |
-| --- | --- | --- | --- | --- | --- |
+| Trace ID | Product requirement ID | Success criterion ID | Governing decision / constraint IDs | Architecture element ID | Acceptance criterion ID | Validation evidence or planned test | Gate/status |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 {{traceability_snapshot_rows}}
+
+## Governance Mapping Snapshot
+
+| Governance trace ID | Decision / constraint node ID | Affected path IDs | Affected architecture element IDs | Validation evidence or gate IDs | Status |
+| --- | --- | --- | --- | --- | --- |
+{{governance_snapshot_rows}}
 
 ## Required PoCs
 

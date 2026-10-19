@@ -1,10 +1,14 @@
 # Initial Solution: {{project_name}}
 
+**Stage 3 state revision:** {{stage3_state_revision}}
+
 **Handoff readiness:** {{blocked_conditional_or_ready_for_planning}}
 
-**Technical direction:** {{path_id_and_direction}}
+**Selection lifecycle:** {{not-selected_recommended-not-confirmed_or_user-confirmed}}
 
-**Direction status:** {{proposed_recommended_or_user-confirmed}}
+**Selected path ID:** {{selected_path_id_or_none}}
+
+**Recommended path ID:** {{recommended_path_id_or_none}}
 
 This artifact defines planning inputs only. It does not authorize implementation or PoC execution.
 
@@ -38,11 +42,11 @@ Do not invent an unspecified target. Use `TBD` and name the approval gate.
 
 ## Preliminary Architecture
 
-| Architecture element ID | Responsibility | Interfaces / data flow | Governing decision and constraint IDs | Status | Evidence or unresolved gate |
+| Architecture element ID | Responsibility | Interfaces / data flow | Governing decision and constraint IDs | Provenance status | Evidence or unresolved gate |
 | --- | --- | --- | --- | --- | --- |
 {{architecture_element_rows}}
 
-Status is `proposed`, `recommended`, or `user-confirmed`. Unsupported implementation detail remains `TBD` behind an explicit gate.
+Provenance status is `proposed`, `recommended`, or `user-confirmed`; it does not replace the separate selection lifecycle. Unsupported implementation detail remains `TBD` behind an explicit gate.
 
 ## Security And Failure Boundaries
 
@@ -56,19 +60,29 @@ Status is `proposed`, `recommended`, or `user-confirmed`. Unsupported implementa
 | --- | --- | --- | --- | --- | --- |
 {{acceptance_criterion_rows}}
 
-## Canonical End-To-End Traceability
+## Requirement And Success Traceability
 
-| Trace ID | Upstream node or success criterion ID | Product requirement ID | Requirement / user outcome | Governing decision and constraint IDs | Architecture element ID | Acceptance criterion ID | Validation evidence or planned test | Gate/status |
+| Trace ID | Product requirement ID | Success criterion ID | Requirement / user outcome | Governing decision / constraint IDs | Architecture element ID | Acceptance criterion ID | Validation evidence or planned test | Gate/status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 {{traceability_rows}}
 
-Every user success condition must reach an acceptance criterion. Every material current decision or constraint must reach the architecture, validation, or an explicit gate; stale and superseded branches do not govern current rows.
+Every material requirement appears in at least one complete row through architecture, acceptance, and validation. Every success condition appears in at least one complete row linked to a requirement; split many-to-many mappings into multiple stable trace IDs rather than hiding cardinality in prose.
 
-## Unresolved High-Impact Blockers And Gates
+## Decision And Constraint Governance
 
-| Gate ID | Source node ID / status | Why high impact | Affected architecture elements | Affected acceptance criteria or implementation work | Owner | Exact exit condition | Next action |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-{{high_impact_gate_rows}}
+| Governance trace ID | Decision / constraint node ID | Current resolution | Affected path IDs | Affected architecture element IDs | Validation evidence or gate IDs | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+{{governance_trace_rows}}
+
+Every current governing decision and hard constraint appears in at least one governance row. Map it directly to affected paths or architecture and validation evidence or an explicit gate; do not force it through a fictional product requirement or acceptance criterion.
+
+## Ordered Blocker And Gate Registry
+
+| Order | Gate ID | Type / status | Source node ID | Impact | Affected path / architecture / acceptance / work IDs | Owner | Exact exit condition | Evidence refs | Next action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+{{ordered_gate_rows}}
+
+Every unresolved high-impact item appears as an open blocker or gate in this registry.
 
 Do not mark the handoff ready for planning while a blocking exit condition is unmet.
 
