@@ -112,4 +112,8 @@ Stage 1 may close only when every high-impact node is explicitly one of:
 - intentionally `deferred`; or
 - `out_of_scope`.
 
-No high-impact node may remain `open`, `stale`, or dependent on a `superseded` node. Present the compact product definition together with confirmed decisions, constraints, assumptions, research items, PoCs, deferred/out-of-scope items, and any remaining lower-impact open questions. Stage 1 completes only after the user confirms or corrects that summary, or explicitly authorizes proceeding with the recorded assumptions.
+No high-impact node may remain `open`, `stale`, or dependent on a `superseded` node. Present the compact product definition together with confirmed decisions, constraints, assumptions, research items, PoCs, deferred/out-of-scope items, and any remaining lower-impact open questions.
+
+If the user corrects that summary, apply the correction, perform recursive invalidation, recompute the frontier, resolve or classify newly exposed high-impact nodes, update affected artifacts, and present the updated summary again. The correction itself is not approval. Stage 1 completes only when the user explicitly approves the latest updated summary.
+
+Authorization to proceed with assumptions is not sufficient by itself. It completes Stage 1 only when the user simultaneously explicitly approves the updated summary that displays those assumptions; record both approvals as evidence.
