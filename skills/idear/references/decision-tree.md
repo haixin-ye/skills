@@ -43,8 +43,20 @@ Use statuses consistently:
 | `needs_poc` | Assigned to an environment-specific experiment; not yet resolved. |
 | `deferred` | Intentionally postponed with a recorded reason. |
 | `out_of_scope` | Intentionally excluded from the current decision scope. |
-| `stale` | Previously active conclusion invalidated by an upstream change. |
+| `stale` | Previously active node or queued work invalidated by an upstream change. |
 | `superseded` | Historical user decision or constraint replaced by a newer node. |
+
+## Graph invariants
+
+The persisted dependency graph must remain a directed acyclic graph (DAG):
+
+- Every node ID is unique.
+- Every `depends_on` entry references an existing node ID.
+- A node cannot depend on itself, directly or indirectly; self-dependencies and cycles are invalid.
+- Validate these invariants whenever loading or changing the tree. Repair invalid state before computing the frontier, asking another question, starting research or a PoC, or issuing a conclusion.
+- Persist `decision_tree.frontier` as an ordered, priority-ranked list of unique node IDs only. Do not store node objects, missing IDs, duplicates, or eligible IDs in arbitrary order.
+
+Even though valid state is acyclic, every recursive reverse-dependency traversal must maintain a `visited` set. This prevents repeated processing and makes invalidation terminate safely if persisted state is corrupt.
 
 ## Ownership and classification
 
@@ -62,7 +74,7 @@ When a proposition could be checked in general but its truth for this exact envi
 
 ## Frontier
 
-The **frontier** is the set of material `open` nodes whose `depends_on` prerequisites are settled. A prerequisite is settled for dependency ordering only when it is `resolved` or `assumed`. Nodes marked `needs_research`, `needs_poc`, `deferred`, `out_of_scope`, `stale`, or `superseded` do not satisfy an active dependency.
+The **frontier** is the priority-ordered list of material `open` node IDs whose `depends_on` prerequisites are settled. A prerequisite is settled for dependency ordering only when it is `resolved` or `assumed`. Nodes marked `needs_research`, `needs_poc`, `deferred`, `out_of_scope`, `stale`, or `superseded` do not satisfy an active dependency.
 
 Recompute and persist `decision_tree.frontier` after each node change. Do not ask about a node outside the frontier. Classify frontier nodes before acting: ask user-owned choices, queue facts for research, and route environment claims to PoC.
 
@@ -83,9 +95,9 @@ Never edit history to make a reversal look as though the old decision never exis
 
 1. Create and resolve the replacement node with a new stable ID.
 2. Mark a replaced user decision or constraint `superseded`; mark a replaced fact, assumption, or experiment result `stale`. Preserve the old node's original resolution answer and rationale, then add `replacement_node_id` and `change_reason` to that resolution record. Never replace the original no-cloud decision, fact, assumption, or experiment result with the new answer.
-3. Traverse `depends_on` recursively from the replaced node. Mark every direct and transitive dependent active conclusion `stale`, even when it appears likely to remain true.
+3. Traverse reverse `depends_on` edges recursively from the replaced node with a `visited` set. Mark every direct and transitive dependent active node. Active nodes currently `open`, `resolved`, `assumed`, `needs_research`, or `needs_poc` all become `stale`. Traverse through every dependent even if it is already inactive so no transitive node is missed.
 4. Find every artifact that cites an affected node or repeats its conclusion. List the affected node IDs and artifact paths to the user before issuing a revised conclusion.
-5. Reclassify each affected uncertainty as a new user decision, fact for research, assumption, experiment for PoC, constraint, deferred item, or out-of-scope item. Preserve stale nodes and create new active nodes rather than changing the historical entries back to current.
+5. Reclassify each affected uncertainty as a new user decision, fact for research, assumption, experiment for PoC, constraint, deferred item, or out-of-scope item. Preserve stale nodes and create replacement nodes for any still-material pending work rather than changing historical entries back to current. An old `open`, `needs_research`, or `needs_poc` node must not continue triggering work or permanently block the frontier.
 6. Recompute the frontier and refresh any summary or verdict that used the invalidated branch.
 
 For example, a superseded constraint keeps its original answer while recording why and where it was replaced:
@@ -112,8 +124,8 @@ Stage 1 may close only when every high-impact node is explicitly one of:
 - intentionally `deferred`; or
 - `out_of_scope`.
 
-No high-impact node may remain `open`, `stale`, or dependent on a `superseded` node. Present the compact product definition together with confirmed decisions, constraints, assumptions, research items, PoCs, deferred/out-of-scope items, and any remaining lower-impact open questions.
+No high-impact node may remain `open`, `stale`, or dependent on a `superseded` node. Before presenting the compact product definition, increment `summary.confirmation.current_revision` and set its status to `pending`. Retain the last confirmed revision and evidence so work can resume safely. Present the current revision together with confirmed decisions, constraints, assumptions, research items, PoCs, deferred/out-of-scope items, and any remaining lower-impact open questions.
 
 If the user corrects that summary, apply the correction, perform recursive invalidation, recompute the frontier, resolve or classify newly exposed high-impact nodes, update affected artifacts, and present the updated summary again. The correction itself is not approval. Stage 1 completes only when the user explicitly approves the latest updated summary.
 
-Authorization to proceed with assumptions is not sufficient by itself. It completes Stage 1 only when the user simultaneously explicitly approves the updated summary that displays those assumptions; record both approvals as evidence.
+Authorization to proceed with assumptions is not sufficient by itself. It completes Stage 1 only when the user simultaneously explicitly approves the updated summary that displays those assumptions; record both approvals as evidence. On approval, set `confirmed_revision` to `current_revision`, set the confirmation status to `confirmed`, and record `confirmed_at`, `confirmation_note`, and `confirmation_evidence_refs`. Stage 1 is complete only while `confirmed_revision` equals `current_revision`.

@@ -50,7 +50,7 @@ Convert the user's rough idea into a product definition that is concrete enough 
 ### Required behavior
 
 - Save the user's original wording in `00-raw-idea.md` before substantially reframing it.
-- Ask one high-leverage clarification question at a time. Do not present a survey.
+- Ask one high-leverage clarification question by default. Ask at most three in one round only when they are independent, have settled prerequisites, and are easy to answer; otherwise ask one. Do not present a survey.
 - Seek the problem, target user, operating environment, primary workflow, success condition, hard constraints, and non-goals.
 - Treat stated constraints as binding. Examples include "LAN only", "no account", "offline", "no cloud", a target platform, or a budget limit.
 - Make reasonable, clearly labelled assumptions when they do not materially change the research direction. Ask instead when an unknown would change the architecture, permissions, cost, legal posture, or feasibility conclusion.
@@ -69,7 +69,7 @@ Write `01-product-definition.md`, update `project-context.yaml`, and ask the use
 - Assumptions and open questions
 - A one-paragraph clear product description
 
-Only proceed to Stage 2 after the user confirms it, or clearly asks to proceed despite recorded assumptions.
+Only proceed to Stage 2 after the user explicitly approves the latest summary revision. Authorization to proceed with recorded assumptions counts only when the user at the same time explicitly approves the latest summary that displays those assumptions.
 
 Read `references/stage-1-clarification.md` before conducting Stage 1.
 

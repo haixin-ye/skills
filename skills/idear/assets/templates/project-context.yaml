@@ -9,6 +9,13 @@ summary:
   raw_idea: "{{raw_idea}}"
   clear_product_description: "{{clear_product_description}}"
   current_verdict: "undecided"
+  confirmation:
+    status: "pending"
+    current_revision: 0
+    confirmed_revision: null
+    confirmed_at: null
+    confirmation_note: null
+    confirmation_evidence_refs: []
 
 requirements:
   confirmed: []

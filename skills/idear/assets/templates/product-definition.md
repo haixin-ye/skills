@@ -58,5 +58,10 @@
 
 ## User Confirmation
 
-{{confirmation_status}}
+- **Current Revision:** {{current_revision}}
+- **Confirmation Status:** {{confirmation_status}}
+- **Confirmed Revision:** {{confirmed_revision}}
+- **Confirmed At:** {{confirmed_at}}
+- **Confirmation Note:** {{confirmation_note}}
+- **Confirmation Evidence:** {{confirmation_evidence_refs}}
 
