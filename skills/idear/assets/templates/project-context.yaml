@@ -20,6 +20,37 @@ facts:
   reasoned_inferences: []
   needs_poc: []
 
+decision_tree:
+  schema_version: 1
+  allowed_kinds:
+    - "user_decision"
+    - "fact"
+    - "assumption"
+    - "experiment"
+    - "constraint"
+  allowed_statuses:
+    - "open"
+    - "resolved"
+    - "assumed"
+    - "needs_research"
+    - "needs_poc"
+    - "deferred"
+    - "out_of_scope"
+    - "stale"
+    - "superseded"
+  frontier: []
+  nodes:
+    - id: "{{node_id}}"
+      question: "{{question}}"
+      kind: "{{node_kind}}"
+      depends_on: []
+      status: "{{node_status}}"
+      resolution: null
+      impact:
+        level: "{{high_medium_low}}"
+        rationale: "{{impact_rationale}}"
+      evidence_refs: []
+
 research:
   source_files:
     - "sources.yaml"
@@ -31,8 +62,8 @@ technical_direction:
   alternatives: []
 
 risks: []
-open_questions: []
-decisions: []
+open_questions: [] # Derived from active open decision-tree nodes.
+decisions: [] # Legacy summary; decision_tree is authoritative.
 
 artifacts:
   product_definition: "01-product-definition.md"
