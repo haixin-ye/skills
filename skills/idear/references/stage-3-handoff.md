@@ -38,6 +38,14 @@ Overall selection lifecycle is separately exactly one of:
 - `recommended-not-confirmed`: the agent has a defensible recommended path, but `selected_path_id` remains null;
 - `user-confirmed`: the user accepted the path and `selected_path_id` names it.
 
+Validate the lifecycle and its linked fields as one cross-field contract before rendering any artifact:
+
+- `not-selected`: `recommended_path_id` is null, `selected_path_id` is null, and there is no recommended candidate; every retained candidate has `proposed` provenance.
+- `recommended-not-confirmed`: `recommended_path_id` is non-null and names the one `recommended` candidate, while `selected_path_id` is null and no candidate is `user-confirmed`.
+- `user-confirmed`: `selected_path_id` is non-null and names the one `user-confirmed` candidate, backed by a resolved `user_decision` node and non-empty confirmation evidence. `recommended_path_id` is either null or equals `selected_path_id`: retain the equal ID only when the confirmed path was the agent recommendation, and upgrade that candidate's provenance from `recommended` to `user-confirmed`. Clear a recommendation that conflicts with the user's selection; no other candidate remains `recommended` or `user-confirmed`.
+
+Reject contradictory combinations rather than inferring which field is authoritative. These invariants apply to `project-context.yaml` and every artifact projection.
+
 Represent a material technical-path choice with a `user_decision` node. Set candidate provenance and selection lifecycle to `user-confirmed` only when that node is `resolved` with the user's confirmation evidence. Permission to prepare a handoff, a positive feasibility verdict, or silence is not confirmation.
 
 When an unresolved gate prevents a defensible recommendation, preserve candidate rows as `proposed`, keep lifecycle `not-selected`, keep `recommended_path_id` and `selected_path_id` null, and state `No recommendation — pending GATE-###`. Do not invent a recommendation to complete the template.
@@ -60,7 +68,11 @@ Record one readiness state:
 - `conditional`: the summary is current and planning may proceed only inside named reversible boundaries while explicit non-blocking gates remain;
 - `ready-for-planning`: the summary is current and no active blocker remains; this label does not authorize implementation.
 
-Every blocker or gate must appear in the ordered registry with its order, stable ID, type and status, source node, impact, affected paths/architecture/acceptance work, owner, exact exit condition, and evidence. Do not describe a handoff as implementation-ready while a blocking gate remains open.
+Every blocker or gate must appear in the ordered registry with its order, stable ID, type and status, source node, impact, `readiness_effect`, affected path/architecture/acceptance IDs, affected work IDs, owner, exact exit condition, next action, and evidence. `readiness_effect` is exactly `blocking`, `conditional`, or `none`; use stable `POC-###` or other already-defined work IDs in `affected_work_ids`, and use an empty array when the gate affects no work item.
+
+Derive readiness deterministically after synchronizing the complete registry: if any open gate has `readiness_effect: blocking`, readiness is `blocked`; else, if any open gate has `readiness_effect: conditional`, readiness is `conditional`; else, with a confirmed current summary, readiness is `ready-for-planning`. A summary that is not current must first produce an open blocking summary-confirmation gate, so it also derives `blocked`. Cleared gates and open gates with `readiness_effect: none` do not lower readiness. Never hand-edit `handoff_readiness` independently of this derivation.
+
+Do not describe a handoff as implementation-ready while a blocking gate remains open.
 
 ## Compare technical paths
 

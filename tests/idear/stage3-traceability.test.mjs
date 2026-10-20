@@ -55,13 +55,25 @@ const checks = [
   [context, /ordered_blockers_and_gates:[\s\S]{0,520}next_action:/i, "machine gate records carry their next action"],
   [context, /selection_lifecycle:[\s\S]{0,160}not-selected[\s\S]{0,220}recommended_path_id:[\s\S]{0,160}selected_path_id:/i, "project context distinguishes recommendation from selection"],
   [context, /candidate_paths:[\s\S]{0,180}path_id:[\s\S]{0,160}provenance:[\s\S]{0,180}governing_node_ids:/i, "project context persists candidate provenance and governance"],
+  [context, /lifecycle_contract:[\s\S]{0,220}not-selected:[\s\S]{0,240}recommended_candidate_count:\s*0[\s\S]{0,260}recommended-not-confirmed:[\s\S]{0,300}user-confirmed:/i, "project context declares lifecycle cross-field invariants"],
+  [context, /user-confirmed:[\s\S]{0,240}recommended_path_id:\s*"null-or-equal-selected_path_id"[\s\S]{0,260}resolved-user_decision-with-non-empty-evidence/i, "project context defines confirmed recommendation and evidence semantics"],
   [stage3, /atomically[\s\S]{0,220}state_revision[\s\S]{0,260}06-technical-paths\.md[\s\S]{0,160}07-initial-solution\.md[\s\S]{0,160}08-ai-handoff\.md/i, "Stage 3 requires atomic state and artifact synchronization"],
+  [stage3, /readiness_effect[\s\S]{0,180}blocking[\s\S]{0,180}conditional[\s\S]{0,180}none/i, "Stage 3 defines gate readiness effects"],
+  [stage3, /any open[^\n]*blocking[\s\S]{0,160}blocked[\s\S]{0,240}else[^\n]*open[^\n]*conditional[\s\S]{0,160}conditional[\s\S]{0,240}else[\s\S]{0,160}(confirmed current summary|current summary[^\n]*confirmed)[\s\S]{0,160}ready-for-planning/i, "Stage 3 derives readiness deterministically"],
+  [stage3, /not-selected[^\n]*(recommended_path_id|recommended path ID)[^\n]*null[^\n]*(selected_path_id|selected path ID)[^\n]*null[\s\S]{0,220}no recommended candidate/i, "not-selected has consistent path fields and provenance"],
+  [stage3, /recommended-not-confirmed[^\n]*(recommended_path_id|recommended path ID)[^\n]*(non-null|names)[\s\S]{0,180}recommended[^\w\n]{0,3}candidate[\s\S]{0,180}(selected_path_id|selected path ID)[^\n]*null/i, "recommended-not-confirmed resolves its recommendation and has no selection"],
+  [stage3, /user-confirmed[^\n]*(selected_path_id|selected path ID)[^\n]*(non-null|names)[\s\S]{0,200}user-confirmed[^\w\n]{0,3}candidate[\s\S]{0,260}resolved[^\n]*(user_decision|user-decision)[^\n]*evidence/i, "user-confirmed resolves its selection to confirmed decision evidence"],
+  [stage3, /user-confirmed[\s\S]{0,300}(recommended_path_id|recommended path ID)[^\n]*(null|selected_path_id|selected path ID)/i, "user-confirmed defines recommended path semantics"],
   [paths, /Stage 3 state revision/i, "technical paths expose the authoritative Stage 3 revision"],
   [solution, /Stage 3 state revision/i, "initial solution exposes the authoritative Stage 3 revision"],
   [handoff, /Stage 3 state revision/i, "handoff exposes the authoritative Stage 3 revision"],
   [paths, /ordered blocker and gate registry[\s\S]{0,300}\{\{ordered_gate_rows\}\}/i, "technical paths project the complete ordered gate registry"],
   [solution, /ordered blocker and gate registry[\s\S]{0,300}\{\{ordered_gate_rows\}\}/i, "initial solution projects the complete ordered gate registry"],
   [handoff, /ordered blocker and gate registry[\s\S]{0,300}\{\{ordered_gate_rows\}\}/i, "handoff projects the complete ordered gate registry"],
+  [context, /ordered_blockers_and_gates:[\s\S]{0,520}readiness_effect:[\s\S]{0,360}affected_work_ids:/i, "machine gate records carry readiness effect and affected work IDs"],
+  [paths, /Readiness effect[^\n]*Affected work IDs/i, "technical paths project gate readiness effect and affected work IDs"],
+  [solution, /Readiness effect[^\n]*Affected work IDs/i, "initial solution projects gate readiness effect and affected work IDs"],
+  [handoff, /Readiness effect[^\n]*Affected work IDs/i, "handoff projects gate readiness effect and affected work IDs"],
 ];
 
 const failures = [];
@@ -96,6 +108,88 @@ const summaryAllowsReadyForPlanning = (state) =>
   state.confirmation_status === "confirmed" && state.current_revision === state.confirmed_revision;
 if (summaryAllowsReadyForPlanning(stage2Mutation)) {
   failures.push("a Stage 2 semantic mutation with pending reconfirmation must block ready-for-planning");
+}
+
+const deriveReadiness = ({ summaryCurrent, gates }) => {
+  if (!summaryCurrent || gates.some((gate) => gate.status === "open" && gate.readiness_effect === "blocking")) {
+    return "blocked";
+  }
+  if (gates.some((gate) => gate.status === "open" && gate.readiness_effect === "conditional")) {
+    return "conditional";
+  }
+  return "ready-for-planning";
+};
+
+const readinessCases = [
+  [{ summaryCurrent: true, gates: [{ status: "open", readiness_effect: "blocking" }, { status: "open", readiness_effect: "conditional" }] }, "blocked"],
+  [{ summaryCurrent: true, gates: [{ status: "open", readiness_effect: "conditional" }] }, "conditional"],
+  [{ summaryCurrent: true, gates: [{ status: "open", readiness_effect: "none" }, { status: "cleared", readiness_effect: "blocking" }] }, "ready-for-planning"],
+  [{ summaryCurrent: false, gates: [] }, "blocked"],
+];
+for (const [state, expected] of readinessCases) {
+  if (deriveReadiness(state) !== expected) failures.push(`readiness derivation must produce ${expected}`);
+}
+
+const selectionErrors = ({ lifecycle, recommended_path_id, selected_path_id, candidates }) => {
+  const byId = new Map(candidates.map((candidate) => [candidate.path_id, candidate]));
+  const recommendedCandidates = candidates.filter((candidate) => candidate.provenance === "recommended");
+  const confirmedCandidates = candidates.filter((candidate) => candidate.provenance === "user-confirmed");
+  if (lifecycle === "not-selected") {
+    return [
+      ...(recommended_path_id === null ? [] : ["recommendation must be null"]),
+      ...(selected_path_id === null ? [] : ["selection must be null"]),
+      ...(candidates.every((candidate) => candidate.provenance === "proposed") ? [] : ["only proposed candidates allowed"]),
+    ];
+  }
+  if (lifecycle === "recommended-not-confirmed") {
+    return [
+      ...(recommended_path_id !== null && recommendedCandidates.length === 1 && recommendedCandidates[0].path_id === recommended_path_id ? [] : ["one recommendation must resolve"]),
+      ...(selected_path_id === null ? [] : ["selection must be null"]),
+      ...(confirmedCandidates.length === 0 ? [] : ["confirmed candidate forbidden"]),
+    ];
+  }
+  if (lifecycle === "user-confirmed") {
+    const selected = byId.get(selected_path_id);
+    const recommendationConsistent = recommended_path_id === null || recommended_path_id === selected_path_id;
+    return [
+      ...(selected?.provenance === "user-confirmed" && confirmedCandidates.length === 1 ? [] : ["one selection must resolve"]),
+      ...(typeof selected?.user_decision_node_id === "string" && selected.user_decision_node_id.length > 0 && selected?.decision_status === "resolved" && selected?.decision_evidence_refs?.length ? [] : ["resolved user-decision evidence required"]),
+      ...(recommendationConsistent ? [] : ["recommendation conflicts with selection"]),
+      ...(recommendedCandidates.length === 0 ? [] : ["unconfirmed recommendation forbidden"]),
+    ];
+  }
+  return ["unknown lifecycle"];
+};
+
+const contradictorySelections = [
+  { lifecycle: "not-selected", recommended_path_id: "PATH-001", selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "proposed" }] },
+  { lifecycle: "not-selected", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "proposed" }] },
+  { lifecycle: "not-selected", recommended_path_id: null, selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "recommended" }] },
+  { lifecycle: "not-selected", recommended_path_id: null, selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "user-confirmed" }] },
+  { lifecycle: "recommended-not-confirmed", recommended_path_id: null, selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "recommended" }] },
+  { lifecycle: "recommended-not-confirmed", recommended_path_id: "PATH-001", selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "proposed" }] },
+  { lifecycle: "recommended-not-confirmed", recommended_path_id: "PATH-001", selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "recommended" }] },
+  { lifecycle: "recommended-not-confirmed", recommended_path_id: "PATH-001", selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "recommended" }, { path_id: "PATH-002", provenance: "recommended" }] },
+  { lifecycle: "recommended-not-confirmed", recommended_path_id: "PATH-001", selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "recommended" }, { path_id: "PATH-002", provenance: "user-confirmed" }] },
+  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", decision_status: "resolved", decision_evidence_refs: ["EV-001"] }] },
+  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "proposed", user_decision_node_id: "NODE-001", decision_status: "resolved", decision_evidence_refs: ["EV-001"] }] },
+  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: null, decision_status: "resolved", decision_evidence_refs: ["EV-001"] }] },
+  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", decision_status: "open", decision_evidence_refs: [] }] },
+  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", decision_status: "resolved", decision_evidence_refs: ["EV-001"] }, { path_id: "PATH-002", provenance: "recommended" }] },
+  { lifecycle: "user-confirmed", recommended_path_id: "PATH-002", selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", decision_status: "resolved", decision_evidence_refs: ["EV-001"] }, { path_id: "PATH-002", provenance: "recommended" }] },
+];
+for (const state of contradictorySelections) {
+  if (selectionErrors(state).length === 0) failures.push(`contradictory selection state must fail: ${state.lifecycle}`);
+}
+
+const validSelections = [
+  { lifecycle: "not-selected", recommended_path_id: null, selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "proposed" }] },
+  { lifecycle: "recommended-not-confirmed", recommended_path_id: "PATH-001", selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "recommended" }] },
+  { lifecycle: "user-confirmed", recommended_path_id: "PATH-001", selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", decision_status: "resolved", decision_evidence_refs: ["EV-001"] }] },
+  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", decision_status: "resolved", decision_evidence_refs: ["EV-001"] }] },
+];
+for (const state of validSelections) {
+  if (selectionErrors(state).length !== 0) failures.push(`valid selection state must pass: ${state.lifecycle}`);
 }
 
 if (failures.length) {

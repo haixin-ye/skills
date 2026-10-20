@@ -76,8 +76,8 @@ Recommendations remain advisory until the user accepts them.
 
 ## Ordered Blocker And Gate Registry
 
-| Order | Gate ID | Type / status | Source node ID | Impact | Affected path / architecture / acceptance / work IDs | Owner | Exact exit condition | Evidence refs | Next action |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Order | Gate ID | Type / status | Readiness effect | Source node ID | Impact | Affected path / architecture / acceptance IDs | Affected work IDs | Owner | Exact exit condition | Evidence refs | Next action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 {{ordered_gate_rows}}
 
 Do not plan dependent irreversible work until its gate is cleared.

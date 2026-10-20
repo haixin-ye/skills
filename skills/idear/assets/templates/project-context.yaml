@@ -76,10 +76,28 @@ technical_direction:
     - "proposed"
     - "recommended"
     - "user-confirmed"
+  lifecycle_contract:
+    not-selected:
+      recommended_path_id: "must-be-null"
+      selected_path_id: "must-be-null"
+      recommended_candidate_count: 0
+      user_confirmed_candidate_count: 0
+    recommended-not-confirmed:
+      recommended_path_id: "required-and-resolves-to-the-one-recommended-candidate"
+      selected_path_id: "must-be-null"
+      user_confirmed_candidate_count: 0
+    user-confirmed:
+      recommended_path_id: "null-or-equal-selected_path_id"
+      selected_path_id: "required-and-resolves-to-the-one-user-confirmed-candidate"
+      selected_path_evidence: "resolved-user_decision-with-non-empty-evidence"
+      other_recommended_or_user_confirmed_candidate_count: 0
   candidate_paths:
     - path_id: "{{path_id}}"
       provenance: "{{proposed_recommended_or_user-confirmed}}"
       governing_node_ids: []
+      user_decision_node_id: null
+      user_decision_status: null
+      user_decision_evidence_refs: []
       evidence_refs: []
       invalidation_condition: "{{invalidation_condition}}"
 
@@ -92,9 +110,24 @@ stage3:
     - "blocked"
     - "conditional"
     - "ready-for-planning"
+  readiness_derivation:
+    summary_current_requires:
+      confirmation_status: "confirmed"
+      current_revision_equals_confirmed_revision: true
+    precedence:
+      - when: "any-open-gate-has-readiness_effect-blocking"
+        result: "blocked"
+      - when: "any-open-gate-has-readiness_effect-conditional"
+        result: "conditional"
+      - when: "summary-is-current-and-no-open-blocking-or-conditional-gate"
+        result: "ready-for-planning"
   governing_direction:
     node_id: null
     evidence_refs: []
+  allowed_gate_readiness_effects:
+    - "blocking"
+    - "conditional"
+    - "none"
   ordered_blockers_and_gates:
     - id: "{{gate_id}}"
       exit_condition: "{{exit_condition}}"
@@ -102,11 +135,13 @@ stage3:
       order: 1
       type: "{{summary_confirmation_approval_validation_or_blocker}}"
       status: "{{open_or_cleared}}"
+      readiness_effect: "{{blocking_conditional_or_none}}"
       source_node_id: null
       impact: "{{impact}}"
       affected_path_ids: []
       affected_architecture_element_ids: []
       affected_acceptance_criterion_ids: []
+      affected_work_ids: []
       owner: "{{owner}}"
       evidence_refs: []
   artifact_state_revisions:
