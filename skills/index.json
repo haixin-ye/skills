@@ -11,7 +11,7 @@
       "triggers": [
         "Clarify a rough software, tool, automation, or AI-product idea before coding.",
         "Assess whether an idea is feasible using evidence.",
-        "Compare existing products, open-source projects, APIs, or technical approaches.",
+        "Compare existing solutions for a rough software, tool, automation, or AI-product idea before implementation.",
         "Prepare a confirmed idea for a development handoff."
       ],
       "tags": [

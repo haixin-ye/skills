@@ -31,8 +31,22 @@ assert.equal(entry.description, expectedDescription, "catalog and frontmatter de
 const triggers = entry.triggers.join("\n");
 assert.match(triggers, /(rough|clarif).*(idea|product)/i, "catalog must trigger product clarification");
 assert.match(triggers, /feasib|API|permission|technolog/i, "catalog must trigger feasibility work");
-assert.match(triggers, /compar|existing|already built|competitor/i, "catalog must trigger solution comparison");
 assert.match(triggers, /handoff|later development|before (coding|implementation)/i, "catalog must trigger pre-build handoff work");
+
+const comparisonTriggers = entry.triggers.filter((trigger) => /compar/i.test(trigger));
+assert.deepEqual(
+  comparisonTriggers,
+  ["Compare existing solutions for a rough software, tool, automation, or AI-product idea before implementation."],
+  "solution comparison must be limited to rough-idea exploration before implementation, not ordinary technical comparison",
+);
+assert.ok(
+  comparisonTriggers.every((trigger) => /rough software, tool, automation, or AI-product idea/i.test(trigger)),
+  "every comparison trigger must name the rough product-idea context",
+);
+assert.ok(
+  comparisonTriggers.every((trigger) => /before implementation/i.test(trigger)),
+  "every comparison trigger must name the pre-implementation boundary",
+);
 
 const shortDescription = openai.match(/^\s*short_description:\s*"([^"]+)"/m)?.[1];
 assert.ok(shortDescription, "openai.yaml must keep a quoted short_description");
