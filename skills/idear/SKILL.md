@@ -19,6 +19,12 @@ Read `references/scope-routing.md` before creating any file or directory. Infer 
 
 Honor an explicit request for narrower or deeper treatment. Never silently escalate `quick` or `focused` work to `full`; finish the bounded portion when possible, state what remains unresolved, and offer the broader workflow. Resume an existing workspace at its earliest incomplete stage without repeating settled discovery.
 
+## Recover Existing Full Workspaces Before Stage Routing
+
+For an existing `full` workspace, inspect saved state before selecting Stage 1, Stage 2, or Stage 3. If `decision_tree` is missing or empty while a confirmed product definition or completed Stage 2 artifacts exist, read **Legacy workspace migration** in `references/decision-tree.md` and migrate before stage routing or handoff. This rule also applies when the user directly requests Stage 3: perform the migration before evaluating its entry gates.
+
+A representation-only migration must preserve the actual confirmed requirements, constraints, decisions, assumptions, evidence, history, summary revision, and confirmation evidence. Derive stable decision nodes from the existing artifacts, validate the graph, and recompute the frontier; do not re-ask the user or repeat settled discovery. Then enter the earliest incomplete stage. If Stage 1 and Stage 2 are complete and current, continue to the Stage 3 gates. If migration exposes a substantive conflict, apply the summary-revision and reconfirmation rules instead of treating historical approval as current.
+
 ## Cross-Stage Invariants
 
 - Follow the user's language in conversation and artifacts.

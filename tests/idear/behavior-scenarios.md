@@ -90,6 +90,21 @@ These failures are the RED evidence for the v2 changes below.
 - Do not enter Stage 3 without the user's request.
 - Re-verify drift-prone facts and preserve the existing decision history.
 
+## Scenario 6: Legacy full workspace requesting Stage 3
+
+**Request and state**
+
+> This Full workspace has a confirmed product definition and completed feasibility report from Idear v1, but `project-context.yaml` has no `decision_tree`. Use the existing work and prepare the development handoff; do not repeat discovery.
+
+**Pass criteria**
+
+- Inspect and migrate the legacy state before deciding which Full stage to enter, including when the user directly requests Stage 3.
+- Preserve confirmed requirements, constraints, decisions, assumptions, evidence, history, summary revision, and confirmation evidence; representation-only migration does not revoke valid confirmation.
+- Derive stable decision nodes from existing artifacts, validate the graph, and recompute the frontier before generating the handoff.
+- Do not ask the user to repeat settled Stage 1 or Stage 2 content.
+- Enter the earliest incomplete stage after migration. If Stage 1 and Stage 2 are complete and current, apply the Stage 3 gates rather than returning to clarification or research.
+- If migration exposes a substantive conflict, advance the summary revision and obtain confirmation instead of treating the historical approval as current.
+
 ## Cross-scenario invariants
 
 - User scope beats optional workflow expansion.

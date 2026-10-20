@@ -4,7 +4,7 @@ Research from the position of an engineer trying to make a product decision, not
 
 ## Entry and scope
 
-Start from the latest confirmed product definition and current decision tree. If an existing `full` workspace has a confirmed definition but lacks a decision tree, perform **Legacy workspace migration** from `decision-tree.md` before research. Preserve settled history and do not repeat discovery unless migration exposes a substantive conflict.
+Start from the latest confirmed product definition and current decision tree. Do not start research until both exist and are current. Preserve settled history and do not repeat discovery unless the authoritative state exposes a substantive conflict.
 
 For `full` discovery, every material investigation must name an active `decision_node`. For a bounded `focused` investigation that has no decision tree, assign a stable feasibility-premise ID such as `premise-001` and use it in place of a node link; do not create a full tree merely to satisfy this rule.
 

@@ -11,6 +11,8 @@ const expectedDescription =
 const skill = read("skills/idear/SKILL.md");
 const catalog = JSON.parse(read("skills/index.json"));
 const openai = read("skills/idear/agents/openai.yaml");
+const stage2 = read("skills/idear/references/stage-2-research.md");
+const stage3 = read("skills/idear/references/stage-3-handoff.md");
 
 const frontmatterMatch = skill.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
 assert.ok(frontmatterMatch, "SKILL.md must have YAML frontmatter");
@@ -65,6 +67,40 @@ assert.match(
 const body = skill.slice(frontmatterMatch[0].length);
 const bodyWordCount = body.split(/\s+/).filter(Boolean).length;
 assert.ok(bodyWordCount <= 1000, `SKILL.md body must stay concise; found ${bodyWordCount} words`);
+
+const legacyRecoveryMatch = body.match(
+  /## Recover Existing Full Workspaces Before Stage Routing\r?\n([\s\S]*?)(?=\r?\n## )/,
+);
+assert.ok(legacyRecoveryMatch, "SKILL.md must define one pre-stage-routing legacy recovery gate");
+const legacyRecovery = legacyRecoveryMatch[1];
+for (const [pattern, label] of [
+  [/existing `full` workspace/i, "existing Full-workspace scope"],
+  [/(missing|no|absent) or empty `decision_tree`|`decision_tree` is missing or empty/i, "missing-or-empty tree trigger"],
+  [/confirmed product definition[\s\S]{0,100}(completed|complete) Stage 2|(completed|complete) Stage 2[\s\S]{0,100}confirmed product definition/i, "completed Stage 1/2 evidence"],
+  [/before (selecting|choosing|routing)[^\n]{0,60}Stage 1[^\n]{0,30}Stage 2[^\n]{0,30}Stage 3|before stage routing/i, "migration-before-stage-routing order"],
+  [/Legacy workspace migration[\s\S]{0,120}references\/decision-tree\.md|references\/decision-tree\.md[\s\S]{0,120}Legacy workspace migration/i, "canonical migration procedure link"],
+  [/preserve[\s\S]{0,180}(confirmed|confirmation)[\s\S]{0,180}(history|evidence)|(history|evidence)[\s\S]{0,180}preserve[\s\S]{0,180}(confirmed|confirmation)/i, "confirmed content and history preservation"],
+  [/derive[\s\S]{0,80}stable[\s\S]{0,80}(node|decision)/i, "stable-node derivation"],
+  [/(do not|without)[^\n]{0,80}(re-ask|repeat)[^\n]{0,80}settled/i, "no repeated settled discovery"],
+  [/earliest incomplete stage/i, "earliest-incomplete-stage continuation"],
+  [/Stage 3[\s\S]{0,160}(request|asks)[\s\S]{0,160}(migration|migrate)|(?:request|asks)[\s\S]{0,160}Stage 3[\s\S]{0,160}(migration|migrate)/i, "direct Stage 3 request coverage"],
+]) {
+  assert.match(legacyRecovery, pattern, `legacy recovery must retain the ${label}`);
+}
+assert.ok(
+  body.indexOf("## Recover Existing Full Workspaces Before Stage Routing") < body.indexOf("### Stage 1"),
+  "legacy migration must run before any full-stage entry decision",
+);
+for (const [referenceName, referenceText] of [
+  ["stage-2-research.md", stage2],
+  ["stage-3-handoff.md", stage3],
+]) {
+  assert.doesNotMatch(
+    referenceText,
+    /existing `full` workspace[\s\S]{0,180}(lacks|missing|no|empty)[\s\S]{0,100}decision tree/i,
+    `${referenceName} must inherit the single pre-stage-routing migration gate instead of duplicating it`,
+  );
+}
 
 for (const [pattern, label] of [
   [/direct implementation/i, "direct implementation exclusion"],
