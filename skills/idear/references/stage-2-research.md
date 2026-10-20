@@ -4,9 +4,9 @@ Research from the position of an engineer trying to make a product decision, not
 
 ## Entry and scope
 
-Start from the latest confirmed product definition and current decision tree. Do not start research until both exist and are current. Preserve settled history and do not repeat discovery unless the authoritative state exposes a substantive conflict.
+For `full` discovery, start from the latest confirmed product definition and current decision tree. Do not begin its research until both exist and are current. Preserve settled history and do not repeat discovery unless the authoritative state exposes a substantive conflict. Every material Full investigation must name an active `decision_node`.
 
-For `full` discovery, every material investigation must name an active `decision_node`. For a bounded `focused` investigation that has no decision tree, assign a stable feasibility-premise ID such as `premise-001` and use it in place of a node link; do not create a full tree merely to satisfy this rule.
+For a `focused` investigation, start from the named uncertainty, its binding constraints, and a stable feasibility-premise ID such as `premise-001`. Focused work does not require a product definition or a decision tree. Do not escalate it to `full` merely to create either or satisfy those prerequisites; use the premise ID in place of a decision-node link.
 
 Do not research every possible feasibility dimension by default. Investigate only dimensions that can affect the user's verdict, principal risks, technical direction, next PoC, or recommended action. A descriptive topic without such a link is out of scope.
 
