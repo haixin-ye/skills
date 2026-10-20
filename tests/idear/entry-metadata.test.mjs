@@ -50,6 +50,21 @@ assert.ok(
   "every comparison trigger must name the pre-implementation boundary",
 );
 
+const feasibilityTriggers = entry.triggers.filter((trigger) => /feasib/i.test(trigger));
+assert.deepEqual(
+  feasibilityTriggers,
+  ["Assess feasibility for a rough software, tool, automation, or AI-product idea before implementation."],
+  "feasibility discovery must be limited to rough-idea exploration before implementation, not ordinary technical feasibility checks",
+);
+assert.ok(
+  feasibilityTriggers.every((trigger) => /rough software, tool, automation, or AI-product idea/i.test(trigger)),
+  "every feasibility trigger must name the rough product-idea context",
+);
+assert.ok(
+  feasibilityTriggers.every((trigger) => /before implementation/i.test(trigger)),
+  "every feasibility trigger must name the pre-implementation boundary",
+);
+
 const shortDescription = openai.match(/^\s*short_description:\s*"([^"]+)"/m)?.[1];
 assert.ok(shortDescription, "openai.yaml must keep a quoted short_description");
 assert.ok(

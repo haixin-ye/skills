@@ -10,7 +10,7 @@
       "description": "Use when a rough software, tool, automation, or AI-product idea needs product clarification, feasibility evidence, comparison with existing solutions, or a development handoff before implementation.",
       "triggers": [
         "Clarify a rough software, tool, automation, or AI-product idea before coding.",
-        "Assess whether an idea is feasible using evidence.",
+        "Assess feasibility for a rough software, tool, automation, or AI-product idea before implementation.",
         "Compare existing solutions for a rough software, tool, automation, or AI-product idea before implementation.",
         "Prepare a confirmed idea for a development handoff."
       ],
