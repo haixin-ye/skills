@@ -153,13 +153,32 @@ const selectionErrors = ({ lifecycle, recommended_path_id, selected_path_id, can
     const recommendationConsistent = recommended_path_id === null || recommended_path_id === selected_path_id;
     return [
       ...(selected?.provenance === "user-confirmed" && confirmedCandidates.length === 1 ? [] : ["one selection must resolve"]),
-      ...(typeof selected?.user_decision_node_id === "string" && selected.user_decision_node_id.length > 0 && selected?.decision_status === "resolved" && selected?.decision_evidence_refs?.length ? [] : ["resolved user-decision evidence required"]),
+      ...(typeof selected?.user_decision_node_id === "string" && selected.user_decision_node_id.length > 0 && selected?.user_decision_status === "resolved" && selected?.user_decision_evidence_refs?.length ? [] : ["resolved user-decision evidence required"]),
       ...(recommendationConsistent ? [] : ["recommendation conflicts with selection"]),
       ...(recommendedCandidates.length === 0 ? [] : ["unconfirmed recommendation forbidden"]),
     ];
   }
   return ["unknown lifecycle"];
 };
+
+const schemaShapedValidSelection = {
+  lifecycle: "user-confirmed",
+  recommended_path_id: "PATH-001",
+  selected_path_id: "PATH-001",
+  candidates: [{
+    path_id: "PATH-001",
+    provenance: "user-confirmed",
+    governing_node_ids: ["NODE-001"],
+    user_decision_node_id: "NODE-001",
+    user_decision_status: "resolved",
+    user_decision_evidence_refs: ["EV-001"],
+    evidence_refs: ["EV-001"],
+    invalidation_condition: "The user changes the selected path",
+  }],
+};
+if (selectionErrors(schemaShapedValidSelection).length !== 0) {
+  failures.push("a valid user-confirmed fixture using the project-context schema fields must pass");
+}
 
 const contradictorySelections = [
   { lifecycle: "not-selected", recommended_path_id: "PATH-001", selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "proposed" }] },
@@ -171,22 +190,46 @@ const contradictorySelections = [
   { lifecycle: "recommended-not-confirmed", recommended_path_id: "PATH-001", selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "recommended" }] },
   { lifecycle: "recommended-not-confirmed", recommended_path_id: "PATH-001", selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "recommended" }, { path_id: "PATH-002", provenance: "recommended" }] },
   { lifecycle: "recommended-not-confirmed", recommended_path_id: "PATH-001", selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "recommended" }, { path_id: "PATH-002", provenance: "user-confirmed" }] },
-  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", decision_status: "resolved", decision_evidence_refs: ["EV-001"] }] },
-  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "proposed", user_decision_node_id: "NODE-001", decision_status: "resolved", decision_evidence_refs: ["EV-001"] }] },
-  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: null, decision_status: "resolved", decision_evidence_refs: ["EV-001"] }] },
-  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", decision_status: "open", decision_evidence_refs: [] }] },
-  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", decision_status: "resolved", decision_evidence_refs: ["EV-001"] }, { path_id: "PATH-002", provenance: "recommended" }] },
-  { lifecycle: "user-confirmed", recommended_path_id: "PATH-002", selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", decision_status: "resolved", decision_evidence_refs: ["EV-001"] }, { path_id: "PATH-002", provenance: "recommended" }] },
+  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", user_decision_status: "resolved", user_decision_evidence_refs: ["EV-001"] }] },
+  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "proposed", user_decision_node_id: "NODE-001", user_decision_status: "resolved", user_decision_evidence_refs: ["EV-001"] }] },
+  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: null, user_decision_status: "resolved", user_decision_evidence_refs: ["EV-001"] }] },
+  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", user_decision_status: "open", user_decision_evidence_refs: [] }] },
+  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", user_decision_status: "resolved", user_decision_evidence_refs: ["EV-001"] }, { path_id: "PATH-002", provenance: "recommended" }] },
+  { lifecycle: "user-confirmed", recommended_path_id: "PATH-002", selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", user_decision_status: "resolved", user_decision_evidence_refs: ["EV-001"] }, { path_id: "PATH-002", provenance: "recommended" }] },
 ];
 for (const state of contradictorySelections) {
   if (selectionErrors(state).length === 0) failures.push(`contradictory selection state must fail: ${state.lifecycle}`);
 }
 
+const missingSchemaFieldSelections = [
+  {
+    missing: "user_decision_status",
+    state: {
+      lifecycle: "user-confirmed",
+      recommended_path_id: null,
+      selected_path_id: "PATH-001",
+      candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", user_decision_evidence_refs: ["EV-001"] }],
+    },
+  },
+  {
+    missing: "user_decision_evidence_refs",
+    state: {
+      lifecycle: "user-confirmed",
+      recommended_path_id: null,
+      selected_path_id: "PATH-001",
+      candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", user_decision_status: "resolved" }],
+    },
+  },
+];
+for (const { missing, state } of missingSchemaFieldSelections) {
+  if (selectionErrors(state).length === 0) failures.push(`user-confirmed selection missing ${missing} must fail`);
+}
+
 const validSelections = [
   { lifecycle: "not-selected", recommended_path_id: null, selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "proposed" }] },
   { lifecycle: "recommended-not-confirmed", recommended_path_id: "PATH-001", selected_path_id: null, candidates: [{ path_id: "PATH-001", provenance: "recommended" }] },
-  { lifecycle: "user-confirmed", recommended_path_id: "PATH-001", selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", decision_status: "resolved", decision_evidence_refs: ["EV-001"] }] },
-  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", decision_status: "resolved", decision_evidence_refs: ["EV-001"] }] },
+  { lifecycle: "user-confirmed", recommended_path_id: "PATH-001", selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", user_decision_status: "resolved", user_decision_evidence_refs: ["EV-001"] }] },
+  { lifecycle: "user-confirmed", recommended_path_id: null, selected_path_id: "PATH-001", candidates: [{ path_id: "PATH-001", provenance: "user-confirmed", user_decision_node_id: "NODE-001", user_decision_status: "resolved", user_decision_evidence_refs: ["EV-001"] }] },
 ];
 for (const state of validSelections) {
   if (selectionErrors(state).length !== 0) failures.push(`valid selection state must pass: ${state.lifecycle}`);
