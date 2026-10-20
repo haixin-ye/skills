@@ -36,13 +36,18 @@ assert.match(
 );
 assert.match(
   fullStage2,
-  /(?:without|when no)[^\n]{0,160}(?:active )?decision node[^\n]{0,160}Not investigated — outside the active decision scope/i,
-  "SKILL.md completion must render a scoped omission when comparison is out of scope",
+  /(?:without|when no)[^\n]{0,160}(?:active )?decision node[^\n]{0,220}(?:localized|user's language)[^\n]{0,220}not investigated[^\n]{0,160}outside (?:the )?active decision scope/i,
+  "SKILL.md completion must render the scoped-omission meaning in the user's language",
 );
 assert.match(
   fullStage2,
-  /Not investigated — outside the active decision scope[^\n]{0,200}(?:do not|without)[^\n]{0,120}(?:competitor|comparison) research/i,
+  /(?:not investigated|scope notice)[^\n]{0,240}(?:do not|without)[^\n]{0,120}(?:competitor|comparison) research/i,
   "SKILL.md must not perform comparison research merely to complete the response",
+);
+assert.doesNotMatch(
+  fullStage2,
+  /render\s+`Not investigated — outside the active decision scope`/i,
+  "SKILL.md must not require one hardcoded English omission string",
 );
 
 assert.match(
@@ -62,6 +67,11 @@ assert.match(
   scenario5,
   /(?:do not|must not)[^\n]{0,120}(?:create|maintain)[^\n]{0,80}(?:03-competitor-analysis\.md|competitor analysis)[^\n]{0,180}(?:unless|without)[^\n]{0,120}(?:active )?decision node/i,
   "Scenario 5 API-only research must not create competitor analysis without a linked active node",
+);
+assert.match(
+  scenario5,
+  /(?:localized|user's language)[^\n]{0,180}not investigated[^\n]{0,160}outside (?:the )?active decision scope/i,
+  "Scenario 5 must require the omission meaning in the user's language",
 );
 
 for (const [name, text, pattern] of [
@@ -92,11 +102,17 @@ assert.match(
 
 for (const [pattern, label] of [
   [/(?:active )?decision node[\s\S]{0,220}`03-competitor-analysis\.md`|`03-competitor-analysis\.md`[\s\S]{0,220}(?:active )?decision node/i, "decision-linked in-scope branch"],
-  [/Not investigated — outside the active decision scope/i, "exact out-of-scope rendering"],
+  [/\{\{localized_out_of_scope_competitor_notice\}\}/i, "localized out-of-scope placeholder"],
+  [/(?:user's language|localized)[^\n]{0,180}not investigated[^\n]{0,160}outside (?:the )?active decision scope/i, "localized omission semantics"],
   [/(?:do not|must not)[^\n]{0,160}(?:perform|start|add|create)[^\n]{0,120}(?:competitor|comparison) research|(?:competitor|comparison) research[^\n]{0,160}(?:not required|out of scope)/i, "no-research omission branch"],
 ]) {
   assert.match(reportDesign, pattern, `report design must define the ${label}`);
 }
+assert.doesNotMatch(
+  reportDesign,
+  /render exactly `Not investigated — outside the active decision scope`/i,
+  "report design must not bind every user language to one English output string",
+);
 
 const conditionalBranch = (template, label) => {
   const match = template.match(/\{\{#if competitor_analysis_in_scope\}\}([\s\S]*?)\{\{else\}\}([\s\S]*?)\{\{\/if\}\}/i);
@@ -111,8 +127,8 @@ for (const [label, template, summaryPattern] of [
   const { inScope, outOfScope } = conditionalBranch(template, label);
   assert.match(inScope, summaryPattern, `${label} must retain the competitor summary when comparison is in scope`);
   assert.match(inScope, /\{\{competitor_decision_node_ids\}\}/i, `${label} in-scope branch must expose governing decision nodes`);
-  assert.doesNotMatch(inScope, /Not investigated — outside the active decision scope/i, `${label} in-scope branch must not render the omission`);
-  assert.match(outOfScope, /Not investigated — outside the active decision scope/i, `${label} must explicitly render the scoped omission`);
+  assert.doesNotMatch(inScope, /\{\{localized_out_of_scope_competitor_notice\}\}/i, `${label} in-scope branch must not render the omission placeholder`);
+  assert.match(outOfScope, /\{\{localized_out_of_scope_competitor_notice\}\}/i, `${label} must render the localized scoped-omission placeholder`);
   assert.doesNotMatch(outOfScope, summaryPattern, `${label} out-of-scope branch must not require a competitor summary`);
 }
 
