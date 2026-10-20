@@ -43,6 +43,15 @@ for (const { name, path, text } of docs) {
     [/(decision tree|决策树)/i, /(frontier|前沿)/i, /(stale|失效)/i, /(superseded|被取代)/i].every((pattern) => pattern.test(text)),
     `${name} README must explain the decision tree, frontier, and invalidation states`,
   );
+  const questionCountContract = name === "English"
+    ? /one question by default[\s\S]{0,120}up to three[\s\S]{0,120}independent[\s\S]{0,100}easy to answer/i
+    : /默认[^\n]{0,80}(一个|1)[^\n]{0,80}问题[\s\S]{0,160}最多(三个|3\s*个)[\s\S]{0,140}(相互)?独立[\s\S]{0,120}(容易|易于)回答/i;
+  check(questionCountContract.test(text), `${name} README must state the one-by-default and independent/easy up-to-three question rule`);
+
+  const invalidationScopeContract = name === "English"
+    ? /(all|every) direct and indirect active dependent[^.\n]*(stale|invalidat)[\s\S]{0,240}`open`[\s\S]{0,160}`needs_research`[\s\S]{0,160}`needs_poc`/i
+    : /所有直接和间接的活动依赖[^。\n]*(失效|`stale`)[\s\S]{0,240}`open`[\s\S]{0,160}`needs_research`[\s\S]{0,160}`needs_poc`/i;
+  check(invalidationScopeContract.test(text), `${name} README must cover recursive invalidation of all active dependent nodes and pending work`);
   check(/(research|研究)[\s\S]{0,320}(decision node|决策节点|premise|前提)[\s\S]{0,700}(stop|停止|结束)[\s\S]{0,260}(verdict|结论|risk|风险|PoC|行动)/i.test(text), `${name} README must explain decision-driven research and its stopping rule`);
   check(/(traceability|可追溯|追踪)[\s\S]{0,700}(acceptance|验收)[\s\S]{0,600}(PoC|proof of concept|概念验证)[\s\S]{0,700}(handoff|交接)/i.test(text), `${name} README must explain Stage 3 traceability and handoff`);
   check(/(existing|已有|旧版)[\s\S]{0,320}(workspace|工作区)[\s\S]{0,700}(migrat|迁移)[\s\S]{0,700}(without re-asking|无需重新询问|不会重新询问|不重复询问)[\s\S]{0,420}(earliest incomplete stage|最早未完成阶段)/i.test(text), `${name} README must explain legacy workspace migration`);

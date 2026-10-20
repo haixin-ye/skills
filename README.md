@@ -59,9 +59,9 @@ flowchart TD
 
 ### 1. Clarify through a decision tree
 
-Full discovery stores a dependency-aware decision tree in `project-context.yaml`. Its frontier contains the highest-value open questions whose prerequisites are already settled, so the agent asks one useful question at a time instead of running a generic questionnaire. The user owns goals and value choices, the agent researches facts, and environment-dependent claims become PoCs.
+Full discovery stores a dependency-aware decision tree in `project-context.yaml`. Its frontier contains the highest-value open questions whose prerequisites are already settled. The agent asks one question by default and asks up to three only when they are independent, have settled prerequisites, are easy to answer, and require no research or PoC. The user owns goals and value choices, the agent researches facts, and environment-dependent claims become PoCs.
 
-When an upstream answer changes, Idear preserves history: replaced user decisions or constraints become `superseded`, dependent conclusions become `stale`, affected artifacts are named, and the frontier is recalculated. A changed product summary must be confirmed again before later stages rely on it.
+When an upstream answer changes, Idear preserves history: a replaced user decision or constraint becomes `superseded`, while a replaced fact, assumption, or experiment becomes `stale`. Idear recursively marks all direct and indirect active dependent nodes and queued work `stale`, including nodes currently `open`, `resolved`, `assumed`, `needs_research`, or `needs_poc`. Still-material pending work receives new replacement nodes; affected artifacts are named, the frontier is recalculated, and a changed product summary must be confirmed again before later stages rely on it.
 
 ### 2. Research decisions, not topics
 
