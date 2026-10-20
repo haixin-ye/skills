@@ -1,0 +1,169 @@
+# Idear Behavior Scenarios
+
+These are black-box behavior checks for the complete `skills/idear/` bundle. Evaluate observable actions and artifacts, not exact wording.
+
+## Baseline: v1 at `860fbdd`
+
+Three independent read-only evaluations were run before changing the skill.
+
+| Scenario | v1 observation | Baseline result |
+| --- | --- | --- |
+| Bounded fact | The fixed Stage 1 entry and Stage 2 output contract lead to a workspace, product definition, confirmation gate, and full report set despite an explicit no-report request. | Fails proportionality and user-scope preservation. |
+| Focused investigation | The skill has the right evidence rules but no focused route, no focused completion gate, and no lightweight artifact contract. Models must either overrun the requested scope or improvise around the skill. | Fails deterministic focused behavior. |
+| Complex rough idea | The skill names useful clarification dimensions but has no dependency graph, frontier, impact ranking, or state that proves critical branches were closed. | Fails dependency-aware completeness. |
+| Constraint reversal | The skill says to revisit conclusions and preserve superseded decisions, but records no dependency edges, so it cannot reliably enumerate or invalidate all downstream conclusions. | Fails systematic invalidation. |
+
+These failures are the RED evidence for the v2 changes below.
+
+## Scenario 1: Bounded factual question
+
+**Request**
+
+> Can a Chrome extension read the current page DOM? I only want the factual answer and do not need a report.
+
+**Pass criteria**
+
+- Route to quick handling rather than full product discovery.
+- Do not create or modify files unless the user asks to persist the answer.
+- Do not ask for a product definition, target market, competitor analysis, or Stage 1 confirmation.
+- Answer the common case immediately, using current official evidence for changing platform facts.
+- State material boundaries such as permissions, restricted pages, frames, and execution worlds.
+- If one ambiguity remains, answer the common case first instead of blocking on a questionnaire.
+
+## Scenario 2: Focused technical investigation
+
+**Request**
+
+> Investigate only whether macOS can capture system audio without a virtual audio driver. Give me the conclusion, sources, and smallest validation. Do not define the whole product for me.
+
+**Pass criteria**
+
+- Route to focused handling; do not force full product discovery.
+- Ask only a clarification that could materially change the technical conclusion, and prefer conditional answers when that avoids an unnecessary round trip.
+- Limit research to relevant macOS versions, native APIs, permissions, limitations, and the smallest validation.
+- Verify the availability of the exact audio-capture API instead of inferring it from the framework's earlier introduction version.
+- Classify material findings as `verified`, `reasoned_inference`, or `needs_poc`.
+- Default to a concise chat answer. If persistence is useful or requested, create at most `focused-assessment.md` and `sources.yaml`.
+- Do not create a product definition, competitor analysis, complete risk register, feasibility PDF, technical-path report, or development handoff.
+- Do not silently escalate to full discovery; offer it only after completing the focused request.
+
+## Scenario 3: Complex rough product idea
+
+**Request**
+
+> Build a remote-control tool that works only on a LAN, has no accounts, and never depends on cloud services.
+
+**Pass criteria**
+
+- Route to full discovery and preserve the three stated constraints without asking for them again.
+- Create material decision nodes with stable IDs, kinds, dependencies, impact, and status.
+- Start with a question that closes multiple downstream branches, such as the concrete user scenario, rather than premature implementation detail.
+- Ask only frontier questions whose prerequisites are settled.
+- Ask one question by default and no more than three independent, easy questions in a round.
+- Agent-researchable facts become research nodes; user value choices remain user decisions; environment-dependent claims become PoC nodes.
+- Stage 1 cannot complete while a high-impact node is silently open.
+
+## Scenario 4: Constraint reversal
+
+**Continuation**
+
+> Cloud relay is now allowed when direct LAN connectivity fails.
+
+**Pass criteria**
+
+- Preserve the old no-cloud decision and mark it `superseded`.
+- Record the replacement decision and its rationale.
+- Mark every direct and transitive dependent conclusion `stale`.
+- Explicitly list affected authentication, identity, networking, privacy, cost, deployment, competitor, architecture, risk, and PoC nodes when applicable.
+- Reclassify affected nodes as questions, research, decisions, or PoCs and recompute the frontier.
+- Do not issue a new verdict while an active conclusion still relies on the superseded constraint.
+
+## Scenario 5: Existing product definition
+
+**Request**
+
+> The confirmed product definition and constraints are already in this workspace. Research whether the required APIs exist and stop after the feasibility verdict.
+
+**Pass criteria**
+
+- Inspect existing state and enter the earliest incomplete stage.
+- Do not repeat settled Stage 1 questions.
+- Do not enter Stage 3 without the user's request.
+- Re-verify drift-prone facts and preserve the existing decision history.
+- Do not create or maintain `03-competitor-analysis.md` unless an active decision node requires competitor, existing-solution, or differentiation evidence; API-only research does not justify it by itself.
+- In this API-only case, the feasibility report and completion response use a localized notice in the user's language stating that competitor work was not investigated because it is outside the active decision scope, instead of requiring closest alternatives or silently performing comparison research.
+
+## Scenario 6: Legacy full workspace requesting Stage 3
+
+**Request and state**
+
+> This Full workspace has a confirmed product definition and completed feasibility report from Idear v1, but `project-context.yaml` has no `decision_tree`. Use the existing work and prepare the development handoff; do not repeat discovery.
+
+**Pass criteria**
+
+- Inspect and migrate the legacy state before deciding which Full stage to enter, including when the user directly requests Stage 3.
+- Preserve confirmed requirements, constraints, decisions, assumptions, evidence, history, summary revision, and confirmation evidence; representation-only migration does not revoke valid confirmation.
+- Derive stable decision nodes from existing artifacts, validate the graph, and recompute the frontier before generating the handoff.
+- Do not ask the user to repeat settled Stage 1 or Stage 2 content.
+- Enter the earliest incomplete stage after migration. If Stage 1 and Stage 2 are complete and current, apply the Stage 3 gates rather than returning to clarification or research.
+- If migration exposes a substantive conflict, advance the summary revision and obtain confirmation instead of treating the historical approval as current.
+
+## Cross-scenario invariants
+
+- User scope beats optional workflow expansion.
+- Artifacts are proportional to decision scope and persistence need.
+- Facts are researched by the agent; user choices are asked of the user; environment claims are validated by PoC.
+- Recommendations do not define the user's goals or values.
+- Every material conclusion is traceable to evidence, explicit reasoning, an assumption, or a PoC.
+- A changed upstream decision invalidates dependent conclusions rather than silently overwriting them.
+- The skill never begins implementation.
+
+## Stage 2: Decision-driven research assertions
+
+Apply these assertions to both the focused investigation and the full-discovery research scenarios:
+
+- Every material investigation names the decision-tree node or explicit feasibility premise that caused it. Research without either link is out of scope.
+- Every research item states which decision or recommendation it could change, what evidence would be sufficient, the fallback PoC or validation action when desk research is insufficient, and the condition that would invalidate its conclusion.
+- Research order is driven first by the ability to change the recommendation, unblock downstream decisions, or reduce expensive risk; ordinary descriptive detail cannot displace a decision-critical item.
+- The investigation stops expanding when additional evidence is unlikely to change the verdict, principal risks, technical direction, next PoC, or recommended action. The dossier records that stopping rationale and any residual uncertainty.
+- Evidence records preserve source tier, access date, access status, claim status, and uncertainty; inaccessible or low-tier evidence cannot silently support a `verified` conclusion.
+- When focused work is persisted, `focused-assessment.md` records the research priority rationale and gives every material finding its own claim status, source IDs, scope/version applicability, uncertainty, and freshness risk; `sources.yaml` remains the only other focused artifact.
+- A legacy v1 workspace with a confirmed product definition but no `decision_tree` is migrated from its existing requirements, constraints, decisions, assumptions, facts, evidence, and history before Stage 2. Settled content is not asked again unless migration exposes a substantive conflict.
+- When Stage 2 evidence overturns a resolved or assumed node, the old node is preserved as `stale` or `superseded`, a replacement node is created, all direct and transitive dependents and affected artifacts are recorded, the frontier is recomputed, and no stale verdict survives.
+- A persisted focused assessment records required research-item `status` using only `queued`, `researching`, `resolved`, `needs_poc`, `deferred`, or `out_of_scope`.
+- Full-discovery `research-dossier.md` and `risk-register.md` accept decision-node IDs only; focused feasibility-premise IDs remain exclusive to `focused-assessment.md`.
+- Full research creates or maintains `03-competitor-analysis.md` only when an active decision node requires competitor, existing-solution, or differentiation evidence. When created, every material comparison row carries the node, changeable decision or recommendation, source IDs, claim status, scope/version, uncertainty/freshness, invalidation condition, and validation or fallback action.
+- Every source has exactly one mutually exclusive tier, and `sources.yaml` uses neutral placeholders plus explicit allowed values for source type, tier, access status, and confidence rather than pre-asserting an official, accessible, high-confidence source.
+
+## Stage 3: Development-handoff traceability assertions
+
+Apply these assertions when the user elects to pursue a full-discovery idea and asks for an implementation approach or a development handoff:
+
+- Every user success condition receives a stable success-criterion ID and maps to at least one objective acceptance criterion. Each acceptance criterion identifies its architecture element, planned test or existing evidence, and current gate status; an unspecified threshold remains an explicit approval gate rather than an invented number.
+- Every candidate path and any recommended direction name the governing decision-node and hard-constraint IDs. Candidate provenance is exactly `proposed`, `recommended`, or `user-confirmed`; a recommendation never masquerades as user selection.
+- `project-context.yaml` stays synchronized with selection lifecycle and Stage 3 artifact paths. A `user-confirmed` path is backed by a resolved user-decision node and confirmation evidence, not only an artifact label.
+- Stage 3 rechecks `summary.confirmation`: `ready-for-planning` is forbidden unless `confirmation_status` is `confirmed` and `current_revision` equals `confirmed_revision`. A Stage 2 semantic mutation that advances the current revision and resets confirmation to `pending` creates a blocking reconfirmation gate.
+- Candidate-path provenance remains independent of the overall selection lifecycle in general. In `not-selected`, however, all retained candidates remain `proposed`; `recommended` and `user-confirmed` provenance are reserved for the corresponding later lifecycle. With no defensible recommendation, lifecycle remains `not-selected`, recommended and selected path IDs are null, and the artifacts may state `No recommendation — pending GATE-###`.
+- Lifecycle-linked fields are validated together: `not-selected` has null recommendation and selection IDs plus no recommended candidate; `recommended-not-confirmed` resolves one recommended candidate and keeps selection null; `user-confirmed` resolves one confirmed candidate to user-decision evidence and cannot retain a conflicting recommendation.
+- Every active decision-tree node with status `needs_poc` maps to at least one ordered PoC task or gate, and every PoC task maps back to a `needs_poc` node. Each mapping states the hypothesis, success/failure threshold, evidence output, decision unlocked, and dependencies.
+- Every unresolved high-impact node remains visible as a blocker or gate, including the affected architecture, acceptance criteria, or implementation work and the exact exit condition. Stage 3 does not describe the handoff as implementation-ready while a blocking condition remains unsatisfied.
+- Every machine gate and all three artifact projections carry `readiness_effect` plus affected work IDs. Readiness derives in strict order: any open blocking gate means `blocked`; otherwise any open conditional gate means `conditional`; otherwise a confirmed current summary means `ready-for-planning`.
+- Canonical trace and governance IDs remain consistent across `06-technical-paths.md`, `07-initial-solution.md`, and `08-ai-handoff.md`.
+- Traceability uses two complete mappings: every material requirement and success condition reaches architecture, acceptance, and validation; every current governing decision or constraint reaches affected paths or architecture and validation evidence or an explicit gate. Governance nodes are not forced through a fictional product-requirement chain.
+- The handoff separates user-confirmed decisions and constraints, agent recommendations, proposals, assumptions, and required PoCs. It tells the next development agent what it may refine, what it must preserve, what needs user approval, and what must be validated first without repeating settled discovery.
+- Unresolved high-impact blockers are not mixed with deliberately deferred or lower-impact open items; both remain visible with ownership and revisit conditions.
+- The self-contained handoff carries each confirmed product requirement and each user success condition's actual text with stable IDs, requirement and acceptance mappings, and source evidence or gate; the next agent does not need another artifact to reconstruct an `SC-###` meaning.
+- Stage 3 uses `TBD` or an explicit gate for unsupported implementation detail. It creates planning and validation artifacts only, does not generate code or perform PoCs, and does not imply implementation authorization.
+- `project-context.yaml.stage3` is the authoritative machine state for handoff readiness, governing-direction provenance, and the ordered blocker/gate registry. A material change advances one Stage 3 state revision and synchronizes that revision atomically across all three Stage 3 artifacts.
+
+## v2 Forward-Test Results (Task 8)
+
+Recorded on 2026-10-20 against the `feat/idear-v2` worktree:
+
+- **PASS:** Independent Quick and Focused forward scenarios stayed within the requested depth and artifact boundaries.
+- **PASS:** Scenarios 3–6 and their decision, invalidation, revision, migration, selection, and readiness state transitions met the assertions above.
+- **FAIL → FIXED:** The initial Stage 3 forward test found that `06-technical-paths.md` did not project the canonical `TRACE-###` and `GOV-###` IDs required across all three Stage 3 artifacts. Commit `ab18d74` added a path-linked, read-only projection while keeping `07-initial-solution.md` the sole canonical-table owner.
+- **PASS:** The targeted independent re-test passed after `ab18d74`; the Stage 3 contract now passes all 66 checks.
+- **REGRESSION GUARD:** Commit `dd7377e` added the exact API-availability assertion for Scenario 2 so framework introduction cannot be treated as proof that a specific audio-capture API exists in the same version.
+
+These entries record forward-scenario and local Node-contract evidence only. Official `scripts/validate_skill.py` and GitHub Actions results are intentionally not claimed here until they run in their native Python/CI environment.

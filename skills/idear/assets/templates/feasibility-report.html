@@ -45,7 +45,12 @@
     </section>
     <section>
       <h2>Existing Solutions And Differentiation</h2>
+      {{#if competitor_analysis_in_scope}}
+      <p class="scope-note"><strong>Governing decision nodes:</strong> {{competitor_decision_node_ids}}</p>
       {{competitor_summary_html}}
+      {{else}}
+      <p class="scope-note">{{localized_out_of_scope_competitor_notice}}</p>
+      {{/if}}
     </section>
     <section>
       <h2>Constraints And Risks</h2>

@@ -2,10 +2,12 @@ sources:
   - id: "src-001"
     title: "{{source_title}}"
     url: "{{source_url}}"
-    source_type: "official_documentation"
+    source_type: "{{source_type}}" # Allowed: law_or_regulation, standard_or_specification, official_api_or_platform_docs, official_source_code, official_product_or_help_docs, release_notes, official_issue_tracker, maintainer_statement, peer_reviewed_or_empirical_research, independent_analysis, tutorial, forum_or_social, other.
+    source_tier: "{{source_tier}}" # Allowed: tier_1_authoritative_primary, tier_2_first_party_operational, tier_3_independent_research, tier_4_secondary. Exactly one.
     publisher: "{{publisher}}"
     accessed_on: "{{date}}"
+    access_status: "{{access_status}}" # Allowed: accessible, partially_accessible, inaccessible.
     supports_claims: []
-    confidence: "high"
+    confidence: "{{confidence}}" # Allowed: high, medium, low. Do not infer confidence from tier alone.
     notes: ""
 

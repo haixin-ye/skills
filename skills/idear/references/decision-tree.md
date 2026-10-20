@@ -1,0 +1,146 @@
+# Persisted Decision Tree
+
+Use the decision tree only for `full` discovery. It is the dependency-aware record of what is known, what must be decided or validated, and which conclusions become invalid when an upstream premise changes. Persist it under `decision_tree` in `project-context.yaml` and update it after every material clarification, finding, assumption, experiment result, or reversal.
+
+## Node schema
+
+Create a node for every material question or conclusion. A material node can change the product definition, feasibility verdict, hard-constraint fit, principal risk, technical direction, or next validation.
+
+Every node must persist all of these fields:
+
+```yaml
+- id: "UD-001"
+  question: "Who is the primary user in the first release?"
+  kind: "user_decision"
+  depends_on: []
+  status: "open"
+  resolution: null
+  impact:
+    level: "high"
+    rationale: "Changes the workflow, permissions, and success condition."
+  evidence_refs: []
+```
+
+- `id`: stable and unique. Prefer `UD-###`, `F-###`, `A-###`, `E-###`, or `C-###` for the five kinds. Never renumber or reuse an ID.
+- `question`: the uncertainty or proposition in language a later agent can understand.
+- `kind`: exactly one of `user_decision`, `fact`, `assumption`, `experiment`, or `constraint`.
+- `depends_on`: IDs whose current answers must be valid before this node can be answered or relied upon.
+- `status`: exactly one of `open`, `resolved`, `assumed`, `needs_research`, `needs_poc`, `deferred`, `out_of_scope`, `stale`, or `superseded`.
+- `resolution`: the current answer and rationale, or `null` while unanswered. Once answered, preserve the original answer and rationale. For a replacement or reversal, add the replacement node ID and change reason alongside that original resolution; never overwrite the old answer.
+- `impact`: at least `level` (`high`, `medium`, or `low`) and a short rationale. Assess the ranking factors below when assigning it.
+- `evidence_refs`: conversation turns, source IDs, artifact anchors, or PoC results that support the resolution. Never use an untraceable conclusion.
+
+Do not delete closed, stale, or superseded nodes. The tree is a historical decision record as well as current execution state.
+
+Use statuses consistently:
+
+| Status | Meaning |
+| --- | --- |
+| `open` | Unanswered; it joins the frontier only when all prerequisites are settled. |
+| `resolved` | Current answer is supported by user confirmation, evidence, or a completed PoC. |
+| `assumed` | Explicit working premise accepted for now, not a verified fact. |
+| `needs_research` | Assigned to agent research; not yet resolved. |
+| `needs_poc` | Assigned to an environment-specific experiment; not yet resolved. |
+| `deferred` | Intentionally postponed with a recorded reason. |
+| `out_of_scope` | Intentionally excluded from the current decision scope. |
+| `stale` | Previously active node or queued work invalidated by an upstream change. |
+| `superseded` | Historical user decision or constraint replaced by a newer node. |
+
+## Legacy workspace migration
+
+When a `full` workspace has a confirmed product definition or prior research but its `project-context.yaml` has no `decision_tree` (or only an empty tree created during upgrade), migrate the existing state before asking Stage 1 questions or starting Stage 2. Do not replace settled discovery with a blank tree.
+
+1. Read the existing `project-context.yaml`, confirmed `01-product-definition.md`, `decision-log.md`, research dossier, risk register, and cited source or PoC evidence that exists. Treat these as historical evidence; do not delete or rewrite them to look native to v2.
+2. Derive one stable node for every material confirmed requirement or value choice (`user_decision`), binding constraint or non-goal (`constraint`), externally checkable claim (`fact`), explicit working premise (`assumption`), and environment-dependent result (`experiment`). Also migrate material unresolved questions.
+3. Preserve each historical answer, rationale, prior status, timestamp when known, and artifact anchor in `resolution` and `evidence_refs`. Preserve superseded decisions as separate historical nodes linked to their replacements. Never collapse a decision history into only its latest answer.
+4. Assign `resolved` only to user-confirmed choices or conclusions with sufficient evidence; assign `assumed` only to an explicit accepted premise; route unverified external claims to `needs_research` and environment-specific claims to `needs_poc`. Do not promote prose to verified fact merely because it appeared in an old report.
+5. Infer `depends_on` only from explicit causal or traceability statements in the existing artifacts. When an edge is uncertain, preserve the uncertainty in the node rather than inventing a dependency. Validate the resulting DAG, then compute and persist the frontier.
+6. Record migration metadata under `decision_tree.migration`: `source_format`, `migrated_at`, `source_artifacts`, `history_preserved`, and any `conflicts`. Keep legacy summary lists in place for compatibility; the migrated tree becomes authoritative going forward.
+
+Migration that only changes representation does not alter semantic summary content and must not advance its revision or discard prior confirmation evidence. Carry forward an existing explicit confirmation with its evidence. If legacy state has explicit approval evidence but no v2 confirmation object, initialize `current_revision` and `confirmed_revision` to the same migration revision, retain the known approval timestamp and evidence refs, and do not invent a missing timestamp. If migration exposes a substantive contradiction, missing material value choice, or materially ambiguous constraint, record the conflict, apply the normal summary-revision rule, and ask only the highest-ranked user-owned frontier question needed to resolve it. Do not ask the user to repeat settled requirements, constraints, decisions, or scenarios. Researchable gaps belong to the agent, and environment-specific gaps belong to a PoC.
+
+## Graph invariants
+
+The persisted dependency graph must remain a directed acyclic graph (DAG):
+
+- Every node ID is unique.
+- Every `depends_on` entry references an existing node ID.
+- A node cannot depend on itself, directly or indirectly; self-dependencies and cycles are invalid.
+- Validate these invariants whenever loading or changing the tree. Repair invalid state before computing the frontier, asking another question, starting research or a PoC, or issuing a conclusion.
+- Persist `decision_tree.frontier` as an ordered, priority-ranked list of unique node IDs only. Do not store node objects, missing IDs, duplicates, or eligible IDs in arbitrary order.
+
+Even though valid state is acyclic, every recursive reverse-dependency traversal must maintain a `visited` set. This prevents repeated processing and makes invalidation terminate safely if persisted state is corrupt.
+
+## Ownership and classification
+
+Classify the uncertainty before deciding who should resolve it:
+
+| Kind | Owner and handling |
+| --- | --- |
+| `user_decision` | Ask the user when the answer expresses goals, value trade-offs, acceptable risk, scope, or preference. Do not research a value choice into existence. |
+| `fact` | The agent verifies it. Set `needs_research` when current evidence is required; do not ask the user to supply an externally researchable fact. |
+| `assumption` | The agent may label a working premise `assumed` only when it is explicit and does not silently decide a material user value. High-impact assumptions require the user's authorization to proceed with them. |
+| `experiment` | Use for outcomes that depend on the user's environment, hardware, data, permissions, version, or integration behavior. Set `needs_poc` and define the smallest discriminating test. |
+| `constraint` | Record a binding condition or forbidden approach. Resolve a constraint already stated by the user immediately with conversation evidence; do not ask for it again. |
+
+When a proposition could be checked in general but its truth for this exact environment is uncertain, separate it into a general `fact` and an environment-specific `experiment` rather than pretending either answer proves both.
+
+## Frontier
+
+The **frontier** is the priority-ordered list of material `open` node IDs whose `depends_on` prerequisites are settled. A prerequisite is settled for dependency ordering only when it is `resolved` or `assumed`. Nodes marked `needs_research`, `needs_poc`, `deferred`, `out_of_scope`, `stale`, or `superseded` do not satisfy an active dependency.
+
+Recompute and persist `decision_tree.frontier` after each node change. Do not ask about a node outside the frontier. Classify frontier nodes before acting: ask user-owned choices, queue facts for research, and route environment claims to PoC.
+
+Order the actionable frontier by:
+
+1. downstream blocking impact: how many material branches it unlocks;
+2. potential to change the feasibility verdict;
+3. relevance to a hard constraint;
+4. irreversibility or cost of getting it wrong;
+5. present uncertainty;
+6. user answerability: prefer a concrete question the user can answer now when earlier factors are comparable.
+
+Ask one question per round by default. Ask at most three only when all are independent of one another, have settled prerequisites, are easy to answer, and can be answered without research or a PoC. Never bundle a dependent follow-up with its prerequisite.
+
+## Upstream changes and invalidation
+
+Never edit history to make a reversal look as though the old decision never existed. When an upstream decision, constraint, fact, assumption, or experiment result changes:
+
+1. Create and resolve the replacement node with a new stable ID.
+2. Mark a replaced user decision or constraint `superseded`; mark a replaced fact, assumption, or experiment result `stale`. Preserve the old node's original resolution answer and rationale, then add `replacement_node_id` and `change_reason` to that resolution record. Never replace the original no-cloud decision, fact, assumption, or experiment result with the new answer.
+3. Traverse reverse `depends_on` edges recursively from the replaced node with a `visited` set. Mark every direct and transitive dependent active node. Active nodes currently `open`, `resolved`, `assumed`, `needs_research`, or `needs_poc` all become `stale`. Traverse through every dependent even if it is already inactive so no transitive node is missed.
+4. Find every artifact that cites an affected node or repeats its conclusion. List the affected node IDs and artifact paths to the user before issuing a revised conclusion.
+5. Reclassify each affected uncertainty as a new user decision, fact for research, assumption, experiment for PoC, constraint, deferred item, or out-of-scope item. Preserve stale nodes and create replacement nodes for any still-material pending work rather than changing historical entries back to current. An old `open`, `needs_research`, or `needs_poc` node must not continue triggering work or permanently block the frontier.
+6. Recompute the frontier and refresh any summary or verdict that used the invalidated branch.
+
+For example, a superseded constraint keeps its original answer while recording why and where it was replaced:
+
+```yaml
+resolution:
+  answer: "Cloud services are forbidden."
+  rationale: "The user set this as a binding constraint."
+  replacement_node_id: "C-004"
+  change_reason: "The user now permits a cloud relay when direct LAN connectivity fails."
+```
+
+For a change that crosses the LAN/cloud boundary or a similar system boundary, explicitly inspect authentication, identity, networking, privacy, cost, deployment, competitors, architecture, risks, and PoCs. List only the domains and artifacts actually affected, but do not omit a transitive dependency merely because it lives in a later-stage artifact.
+
+Do not issue a product definition, verdict, recommendation, or handoff while it still relies on a `stale` or `superseded` premise.
+
+## Stage 1 completion rule
+
+Stage 1 may close only when every high-impact node is explicitly one of:
+
+- `resolved`;
+- `assumed` with the assumption visible to the user;
+- delegated as `needs_research` or `needs_poc`;
+- intentionally `deferred`; or
+- `out_of_scope`.
+
+No high-impact node may remain `open`, `stale`, or dependent on a `superseded` node. Whenever a state change affects semantic summary content, persist that change and atomically increment `summary.confirmation.current_revision` and set `summary.confirmation.confirmation_status` to `pending` in the same context update. Retain `confirmed_revision`, `confirmed_at`, `confirmation_note`, and `confirmation_evidence_refs` as the historical checkpoint for the last explicitly approved revision until a newer revision is approved. This prevents a resumed session from treating old confirmation evidence as approval of current content.
+
+Present the current revision together with confirmed decisions, constraints, assumptions, research items, PoCs, deferred/out-of-scope items, and any remaining lower-impact open questions. Presenting or re-displaying the summary must not increment the revision. If the semantic summary content is unchanged, keep the existing revision even when wording, formatting, or delivery is repeated.
+
+If the user corrects that summary, apply the correction, perform recursive invalidation, recompute the frontier, resolve or classify newly exposed high-impact nodes, update affected artifacts, and present the updated summary again. The correction itself is not approval. Stage 1 completes only when the user explicitly approves the latest updated summary.
+
+Authorization to proceed with assumptions is not sufficient by itself. It completes Stage 1 only when the user simultaneously explicitly approves the updated summary that displays those assumptions; record both approvals as evidence. On approval, set `confirmed_revision` to `current_revision`, set `confirmation_status` to `confirmed`, and record `confirmed_at`, `confirmation_note`, and `confirmation_evidence_refs`. Stage 1 is complete only while `confirmed_revision` equals `current_revision`.

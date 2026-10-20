@@ -1,4 +1,6 @@
 interface:
   display_name: "Idear"
-  short_description: "Research product ideas before building"
-  default_prompt: "Use $idear to assess my product idea, research its feasibility, and prepare a handoff if it is viable."
+  short_description: "Clarify and assess product ideas before coding"
+  default_prompt: "Use $idear to clarify or assess this product idea at the needed depth, compare existing solutions when relevant, and prepare a development handoff only if I request one."
+policy:
+  allow_implicit_invocation: true

@@ -4,27 +4,55 @@
 
 **Last updated:** {{date}}
 
-## Research Question
+## Decision-Linked Research Queue
 
-{{research_question}}
+Every material item must name an active `decision_node` from the full-discovery decision tree.
+
+| ID | decision_node | Research question | Decision it can change | Priority rationale | sufficient_evidence | fallback_poc / validation action | invalidation_condition | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+{{research_item_rows}}
 
 ## Preconditions To Verify
 
-| ID | Required premise | Status | Evidence / validation plan |
-| --- | --- | --- | --- |
+| ID | decision_node | Required premise | Impact | Status | Evidence or validation action |
+| --- | --- | --- | --- | --- | --- |
 {{precondition_rows}}
 
-## Verified Findings
+## Findings
 
-{{verified_findings}}
+| Finding ID | decision_node | Finding | Claim status | Source IDs | Scope / version | Uncertainty and freshness risk | invalidation_condition |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+{{finding_rows}}
 
-## Reasoned Inferences
+Claim status must be `verified`, `reasoned_inference`, or `needs_poc`. An inaccessible source or search snippet cannot by itself support `verified`.
 
-{{reasoned_inferences}}
+## Source Coverage
+
+| Source ID | Source tier | Accessed on | Access status | Claims supported | Confidence / limitations |
+| --- | --- | --- | --- | --- | --- |
+{{source_coverage_rows}}
+
+Use access status `accessible`, `partially_accessible`, or `inaccessible`; keep full URLs, titles, publishers, and source types in `sources.yaml`.
+
+## Decision Updates
+
+| decision_node | Previous state | Research result | New state or recommendation | Evidence refs | Affected downstream nodes / artifacts |
+| --- | --- | --- | --- | --- | --- |
+{{decision_update_rows}}
+
+## Contradiction And Invalidation Transitions
+
+Complete this table whenever evidence overturns a `resolved` or `assumed` node. Preserve the previous resolution and evidence; do not use this table as a substitute for updating the authoritative decision tree.
+
+| Trigger finding / source IDs | Old node / kind | Previous status, resolution, and evidence | stale / superseded | Replacement node / new resolution | Change reason | Recursively stale dependent IDs | Affected artifact paths | Recomputed frontier | Summary / verdict action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+{{invalidation_transition_rows}}
 
 ## Items Requiring A Proof Of Concept
 
-{{needs_poc}}
+| decision_node | Unresolved premise | Why desk research is insufficient | fallback_poc / validation action | Success / failure threshold | Decision affected |
+| --- | --- | --- | --- | --- | --- |
+{{needs_poc_rows}}
 
 ## Environment, Permission, Security, And Licensing Constraints
 
@@ -33,4 +61,11 @@
 ## Conclusion Rationale
 
 {{conclusion_rationale}}
+
+## Research Stopping Decision
+
+- **stopping_rationale:** {{stopping_rationale}}
+- **Remaining uncertainty:** {{remaining_uncertainty}}
+- **Deferred / out of scope:** {{deferred_or_out_of_scope}}
+- **Why more research is unlikely to change the verdict, principal risks, technical direction, next PoC, or recommended action:** {{marginal_research_value}}
 

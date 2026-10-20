@@ -33,7 +33,13 @@ verdict: "{{verdict}}"
 
 ## Existing Solutions And Differentiation
 
+{{#if competitor_analysis_in_scope}}
+**Governing decision nodes:** {{competitor_decision_node_ids}}
+
 {{competitor_summary}}
+{{else}}
+{{localized_out_of_scope_competitor_notice}}
+{{/if}}
 
 ## Constraints And Risks
 
