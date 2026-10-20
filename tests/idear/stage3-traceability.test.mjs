@@ -74,6 +74,10 @@ const checks = [
   [paths, /Readiness effect[^\n]*Affected work IDs/i, "technical paths project gate readiness effect and affected work IDs"],
   [solution, /Readiness effect[^\n]*Affected work IDs/i, "initial solution projects gate readiness effect and affected work IDs"],
   [handoff, /Readiness effect[^\n]*Affected work IDs/i, "handoff projects gate readiness effect and affected work IDs"],
+  [paths, /canonical trace and governance projection[\s\S]{0,360}canonical tables[^\n]*07-initial-solution\.md[\s\S]{0,300}(same|unchanged)[^\n]*(TRACE-###|trace)[^\n]*(GOV-###|governance)/i, "technical paths identify their trace and governance data as a projection of the canonical tables"],
+  [paths, /Trace ID\s*\|\s*Related path IDs\s*\|[\s\S]{0,240}Architecture element ID[\s\S]{0,160}Acceptance criterion ID/i, "technical paths project path-linked canonical TRACE IDs"],
+  [paths, /Governance trace ID\s*\|\s*Related path IDs\s*\|[\s\S]{0,240}Decision \/ constraint node ID[\s\S]{0,180}(Validation evidence|gate IDs)/i, "technical paths project path-linked canonical GOV IDs"],
+  [stage3, /same canonical[^\n]*(TRACE-###|trace)[^\n]*(GOV-###|governance)[^\n]*IDs[\s\S]{0,240}06-technical-paths\.md[\s\S]{0,180}07-initial-solution\.md[\s\S]{0,180}08-ai-handoff\.md/i, "Stage 3 requires the same canonical trace and governance IDs across all three artifacts"],
 ];
 
 const failures = [];

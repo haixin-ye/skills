@@ -39,6 +39,22 @@ Use `TBD` plus an explicit gate when upstream evidence does not support an imple
 
 When an unresolved gate prevents a defensible recommendation, keep selection lifecycle `not-selected`, keep both path IDs `none`, and write `No recommendation — pending GATE-###`. Do not invent a provisional recommendation merely to fill this section.
 
+## Canonical Trace And Governance Projection
+
+The canonical tables live in `07-initial-solution.md`. This is a read-only, path-linked projection: carry every current canonical row with the same unchanged `TRACE-###` and `GOV-###` IDs, and do not mint, renumber, or resolve those IDs here. Use `none (path-neutral)` when a current row has no path-specific relationship.
+
+### Requirement And Success Trace Projection
+
+| Trace ID | Related path IDs | Product requirement ID | Success criterion ID | Governing decision / constraint IDs | Architecture element ID | Acceptance criterion ID | Validation evidence or planned test | Gate/status |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+{{path_traceability_projection_rows}}
+
+### Decision And Constraint Governance Projection
+
+| Governance trace ID | Related path IDs | Decision / constraint node ID | Affected architecture element IDs | Validation evidence or gate IDs | Status |
+| --- | --- | --- | --- | --- | --- |
+{{path_governance_projection_rows}}
+
 ## Rejected Or Deferred Paths
 
 | Path ID | Status | Reason | Governing node or evidence IDs | Reconsideration condition |
