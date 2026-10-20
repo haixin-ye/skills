@@ -52,6 +52,12 @@ Do not research a low-value detail while a higher-ranked item could invalidate t
 
 When comparable products or open-source implementations matter, determine how each solution actually works and whether it satisfies the hard constraints. Marketing text can establish a product claim, but not an unobserved architecture.
 
+## Conditional competitor analysis
+
+Create or maintain `03-competitor-analysis.md` only when an active decision node requires competitor, existing-solution, or differentiation evidence. The node must identify the decision or recommendation the comparison can change; comparison is not a default completeness dimension. API-only research must not create or maintain `03-competitor-analysis.md` when no active comparison or differentiation node requires it.
+
+When the artifact is justified, include only material comparison rows. Every row must retain the linked `decision_node`, the decision or recommendation it can change, source IDs, claim status, scope/version, uncertainty and freshness risk, invalidation condition, and validation or fallback action. Apply the same source-tier and verification rules as every other material finding. Omit irrelevant products and attributes rather than expanding research to fill the template.
+
 ## Evidence that overturns current state
 
 New evidence never silently overwrites a `resolved` or `assumed` node. When a material finding contradicts its current resolution, invoke the complete **Upstream changes and invalidation** procedure in `decision-tree.md`:

@@ -86,7 +86,7 @@ flowchart TD
 | Quick | 仅在对话中回答，不创建文件。 |
 | Focused（需要或要求持久化时） | `focused-assessment.md`、`sources.yaml` |
 | Full — Stage 1：产品澄清 | `00-raw-idea.md`、`01-product-definition.md`、`decision-log.md`、`project-context.yaml` |
-| Full — Stage 2：可行性研究 | `02-research-dossier.md`、`03-competitor-analysis.md`、`04-risk-register.md`、`05-feasibility-report.md`、`sources.yaml`；在用户要求或环境支持时另生成 `05-feasibility-report.pdf` |
+| Full — Stage 2：可行性研究 | `02-research-dossier.md`、`04-risk-register.md`、`05-feasibility-report.md`、`sources.yaml`；`03-competitor-analysis.md` 仅在当前活动决策节点需要竞品、现有方案或差异化证据时生成；在用户要求或环境支持时另生成 `05-feasibility-report.pdf` |
 | Full — Stage 3：可选开发交接 | `06-technical-paths.md`、`07-initial-solution.md`、`08-ai-handoff.md` |
 
 `project-context.yaml` 是 Full 工作区中权威的机器可读状态。面向用户的报告解释最终判断；研究档案、决策日志和交接材料则保留判断依据以及仍未解决的问题。

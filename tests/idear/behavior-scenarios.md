@@ -90,6 +90,7 @@ These failures are the RED evidence for the v2 changes below.
 - Do not repeat settled Stage 1 questions.
 - Do not enter Stage 3 without the user's request.
 - Re-verify drift-prone facts and preserve the existing decision history.
+- Do not create or maintain `03-competitor-analysis.md` unless an active decision node requires competitor, existing-solution, or differentiation evidence; API-only research does not justify it by itself.
 
 ## Scenario 6: Legacy full workspace requesting Stage 3
 
@@ -130,6 +131,7 @@ Apply these assertions to both the focused investigation and the full-discovery 
 - When Stage 2 evidence overturns a resolved or assumed node, the old node is preserved as `stale` or `superseded`, a replacement node is created, all direct and transitive dependents and affected artifacts are recorded, the frontier is recomputed, and no stale verdict survives.
 - A persisted focused assessment records required research-item `status` using only `queued`, `researching`, `resolved`, `needs_poc`, `deferred`, or `out_of_scope`.
 - Full-discovery `research-dossier.md` and `risk-register.md` accept decision-node IDs only; focused feasibility-premise IDs remain exclusive to `focused-assessment.md`.
+- Full research creates or maintains `03-competitor-analysis.md` only when an active decision node requires competitor, existing-solution, or differentiation evidence. When created, every material comparison row carries the node, changeable decision or recommendation, source IDs, claim status, scope/version, uncertainty/freshness, invalidation condition, and validation or fallback action.
 - Every source has exactly one mutually exclusive tier, and `sources.yaml` uses neutral placeholders plus explicit allowed values for source type, tier, access status, and confidence rather than pre-asserting an official, accessible, high-confidence source.
 
 ## Stage 3: Development-handoff traceability assertions

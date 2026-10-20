@@ -48,7 +48,7 @@ Ask only ranked frontier questions and preserve ownership: the user decides goal
 
 Enter only from the latest confirmed product definition. Read `references/stage-2-research.md`, `references/evidence-standards.md`, and `references/report-design.md`. Link every material investigation to an active decision node or focused premise and stop when more evidence is unlikely to change the verdict, principal risks, direction, next PoC, or recommended action.
 
-For `full`, maintain `02-research-dossier.md`, `03-competitor-analysis.md`, `04-risk-register.md`, `sources.yaml`, `decision-log.md`, and `project-context.yaml`; produce `05-feasibility-report.md` and a PDF when requested or supported. Lead the completion response with the verdict, decisive evidence, blockers, closest alternatives, and next action. Ask before Stage 3; feasibility alone does not authorize it.
+For `full`, maintain `02-research-dossier.md`, `04-risk-register.md`, `sources.yaml`, `decision-log.md`, and `project-context.yaml`. Create or maintain `03-competitor-analysis.md` only when an active decision node requires competitor, existing-solution, or differentiation evidence. Produce `05-feasibility-report.md` and a PDF when requested or supported. Lead the completion response with the verdict, decisive evidence, blockers, closest alternatives, and next action. Ask before Stage 3; feasibility alone does not authorize it.
 
 ### Stage 3 — Technical Path And Development Handoff
 

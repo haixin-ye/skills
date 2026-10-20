@@ -86,7 +86,7 @@ Artifacts are route- and stage-dependent. Idear does not create empty placeholde
 | Quick | Chat answer only; no files. |
 | Focused, when persistence is useful or requested | `focused-assessment.md`, `sources.yaml` |
 | Full — Stage 1: clarification | `00-raw-idea.md`, `01-product-definition.md`, `decision-log.md`, `project-context.yaml` |
-| Full — Stage 2: feasibility | `02-research-dossier.md`, `03-competitor-analysis.md`, `04-risk-register.md`, `05-feasibility-report.md`, `sources.yaml`, plus `05-feasibility-report.pdf` when requested or supported |
+| Full — Stage 2: feasibility | `02-research-dossier.md`, `04-risk-register.md`, `05-feasibility-report.md`, and `sources.yaml`; `03-competitor-analysis.md` only when an active decision node requires competitor, existing-solution, or differentiation evidence; plus `05-feasibility-report.pdf` when requested or supported |
 | Full — Stage 3: optional handoff | `06-technical-paths.md`, `07-initial-solution.md`, `08-ai-handoff.md` |
 
 `project-context.yaml` is the authoritative machine-readable state for a Full workspace. The human-facing reports explain the decision; the dossier, decision log, and handoff preserve why it was made and what remains unresolved.
