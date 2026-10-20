@@ -20,7 +20,7 @@ The feasibility report is a decision document for the user, not a transcript of 
 Always render the section heading so the report's research scope is explicit, then render exactly one branch:
 
 - When an active decision node requires competitor, existing-solution, or differentiation evidence, render the decision-linked summary from `03-competitor-analysis.md` and show the governing node IDs.
-- When no such active decision node exists, render exactly `Not investigated — outside the active decision scope`. Competitor or comparison research is not required for this branch; do not perform or start it merely to populate the report.
+- When no such active decision node exists, render `{{localized_out_of_scope_competitor_notice}}`. Populate this notice in the user's language with wording that conveys competitor work was not investigated because it is outside the active decision scope. Competitor or comparison research is not required for this branch; do not perform or start it merely to populate the report.
 
 The omission is a scope statement, not a negative finding about alternatives. Do not present it as evidence that no competing solution exists.
 

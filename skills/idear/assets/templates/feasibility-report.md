@@ -38,7 +38,7 @@ verdict: "{{verdict}}"
 
 {{competitor_summary}}
 {{else}}
-Not investigated — outside the active decision scope.
+{{localized_out_of_scope_competitor_notice}}
 {{/if}}
 
 ## Constraints And Risks
