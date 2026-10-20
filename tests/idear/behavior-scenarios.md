@@ -152,3 +152,15 @@ Apply these assertions when the user elects to pursue a full-discovery idea and 
 - The self-contained handoff carries each confirmed product requirement and each user success condition's actual text with stable IDs, requirement and acceptance mappings, and source evidence or gate; the next agent does not need another artifact to reconstruct an `SC-###` meaning.
 - Stage 3 uses `TBD` or an explicit gate for unsupported implementation detail. It creates planning and validation artifacts only, does not generate code or perform PoCs, and does not imply implementation authorization.
 - `project-context.yaml.stage3` is the authoritative machine state for handoff readiness, governing-direction provenance, and the ordered blocker/gate registry. A material change advances one Stage 3 state revision and synchronizes that revision atomically across all three Stage 3 artifacts.
+
+## v2 Forward-Test Results (Task 8)
+
+Recorded on 2026-10-20 against the `feat/idear-v2` worktree:
+
+- **PASS:** Independent Quick and Focused forward scenarios stayed within the requested depth and artifact boundaries.
+- **PASS:** Scenarios 3–6 and their decision, invalidation, revision, migration, selection, and readiness state transitions met the assertions above.
+- **FAIL → FIXED:** The initial Stage 3 forward test found that `06-technical-paths.md` did not project the canonical `TRACE-###` and `GOV-###` IDs required across all three Stage 3 artifacts. Commit `ab18d74` added a path-linked, read-only projection while keeping `07-initial-solution.md` the sole canonical-table owner.
+- **PASS:** The targeted independent re-test passed after `ab18d74`; the Stage 3 contract now passes all 66 checks.
+- **REGRESSION GUARD:** Commit `dd7377e` added the exact API-availability assertion for Scenario 2 so framework introduction cannot be treated as proof that a specific audio-capture API exists in the same version.
+
+These entries record forward-scenario and local Node-contract evidence only. Official `scripts/validate_skill.py` and GitHub Actions results are intentionally not claimed here until they run in their native Python/CI environment.
