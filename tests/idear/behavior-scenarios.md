@@ -41,6 +41,7 @@ These failures are the RED evidence for the v2 changes below.
 - Route to focused handling; do not force full product discovery.
 - Ask only a clarification that could materially change the technical conclusion, and prefer conditional answers when that avoids an unnecessary round trip.
 - Limit research to relevant macOS versions, native APIs, permissions, limitations, and the smallest validation.
+- Verify the availability of the exact audio-capture API instead of inferring it from the framework's earlier introduction version.
 - Classify material findings as `verified`, `reasoned_inference`, or `needs_poc`.
 - Default to a concise chat answer. If persistence is useful or requested, create at most `focused-assessment.md` and `sources.yaml`.
 - Do not create a product definition, competitor analysis, complete risk register, feasibility PDF, technical-path report, or development handoff.

@@ -7,6 +7,7 @@ const read = (path) => readFileSync(`${root}${path}`, "utf8");
 
 const stage2 = read("skills/idear/references/stage-2-research.md");
 const routing = read("skills/idear/references/scope-routing.md");
+const behaviorScenarios = read("tests/idear/behavior-scenarios.md");
 
 const entryScope = stage2.match(/## Entry and scope\r?\n([\s\S]*?)(?=\r?\n## )/)?.[1];
 assert.ok(entryScope, "Stage 2 must retain an entry-and-scope contract");
@@ -46,6 +47,12 @@ assert.match(
   routing,
   /(?:does not|do not) create a full decision tree/i,
   "scope routing must keep focused research independent of the Full decision tree",
+);
+
+assert.match(
+  behaviorScenarios,
+  /availability of the exact audio-capture API instead of inferring it from the framework's earlier introduction version/i,
+  "the focused macOS regression must distinguish exact API availability from framework availability",
 );
 
 console.log("Idear cross-route research contract passed.");
