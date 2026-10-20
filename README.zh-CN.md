@@ -1,30 +1,21 @@
-# 💡 Idear - 面向 AI Agent 的产品探索与可行性研究 Skill
+# 💡 Idear - 面向 AI Agent 的证据驱动产品探索 Skill
 
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-087A6B?style=flat-square)](https://agentskills.io)
-[![Workflow](https://img.shields.io/badge/Workflow-产品探索-7A5AF8?style=flat-square)](skills/idear/SKILL.md)
+[![Workflow](https://img.shields.io/badge/Workflow-自适应产品探索-7A5AF8?style=flat-square)](skills/idear/SKILL.md)
 [![Evidence](https://img.shields.io/badge/Research-证据优先-1F6FEB?style=flat-square)](skills/idear/SKILL.md)
 [![License](https://img.shields.io/badge/License-Apache--2.0-586069?style=flat-square)](LICENSE)
 
 [English](README.md) | **简体中文**
 
-
 ---
 
-## 💡 写在开始开发之前 (About Idear)
+## 💡 开发之前，先弄清楚什么值得做
 
 > **“在 Agent 写下第一行代码之前，先弄清楚什么值得被构建。”**
 
-你好，欢迎来到 Idear。这个项目源于一个很简单的观察：很多想法最后没有做成，并不是因为没有人会写代码，而是因为那些真正重要的问题，从一开始就没有被问出来。
+很多想法没有做成，并不是因为没人会写代码，而是因为关键问题没有被尽早解决：目标平台是否允许所需能力，API 是否真实存在，隐私或许可证是否阻断方案，以及已有产品是否已经填补了所谓的空白。
 
-目标平台真的支持这个能力吗？所需 API 是否存在？权限、浏览器策略、网络、许可证或隐私规则会不会让项目走不下去？是否已经有人做过同样的东西，而你真正的差异在哪里？AI 的快速回答很容易显得自信，但也可能恰好绕开了这些问题。
-
-Idear 希望让 Agent 在开发之前承担一份更重要的工作：把一个粗糙想法梳理成清晰产品定义，基于真实资料判断它是否成立，并留下让后续开发 Agent 可以信任的上下文。它不替用户做产品决策，而是让决策更有依据、更明确，也更容易被后续工作继承。
-
-无论你在探索一个新工具、AI 工作流、本地优先应用、开发者产品，还是一个听起来稍微有点不可能的自动化想法，Idear 都会帮助你在项目变成一堆代码之前，先找到真实答案。
-
----
-
-
+Idear 是一个自适应、证据优先的产品探索 Skill。它既能回答一个边界清楚的问题，也能调查一个技术不确定性，还能把粗糙想法转化为经确认的产品定义、可行性结论和开发交接。它不替代产品判断，也不授权实现；它让决策有明确记录、有证据支撑、可以被后续 Agent 继承。
 
 ## 🚀 60 秒开始使用 Idear
 
@@ -38,84 +29,86 @@ https://github.com/haixin-ye/skills/tree/master/skills/idear
 <在这里描述你的想法>
 ```
 
-Idear 会帮助 Agent 明确产品定义、核验真实 API 与限制、比较已有方案；如果想法值得继续，还会准备可直接交给开发 Agent 的实现材料。
+你无需选择模式。只要描述自己需要的结果，Idear 就会推断能够可靠回答问题的最浅深度。你仍可明确要求更简短的回答、持久化评估或完整交接。
 
-| 你一开始只有 | Idear 最终会留下 |
-| --- | --- |
-| “这个能做吗？” | 带来源的可行性结论、阻碍与未知项 |
-| “有人做过吗？” | 竞品与开源方案分析，以及真正的差异点 |
-| “第一步该做什么？” | 风险驱动的 PoC、MVP 范围、技术路径与 AI 交接材料 |
+## 🧭 自适应深度
 
-> 如果 Idear 帮你避免了做错方向，欢迎为[这个仓库点一个 Star](https://github.com/haixin-ye/skills)，让更多开发者看到它。
+| 内部路径 | 适用情况 | 处理方式 | 默认文件 |
+| --- | --- | --- | --- |
+| `quick` | 一个边界明确、风险较低的事实问题 | Idear 直接在对话中回答，同时说明关键条件并核验时效性事实。 | 无；不创建工作区。 |
+| `focused` | 只调查一个明确命名的不确定性 | Idear 只研究该问题，默认在对话中给出结论、来源和最小验证。 | 无。仅在持久化确有价值或用户要求时创建 `focused-assessment.md` 和 `sources.yaml`。 |
+| `full` | 粗糙产品想法、相互耦合的决策、系统级硬约束或长期开发交接 | Idear 依次完成有门禁的产品澄清、可行性研究，并只在用户要求时准备技术路径。 | 按阶段创建工作区，只生成当前需要的文件。 |
 
-## ✨ Idear 能做什么
+Idear 不会把 `quick` 或 `focused` 请求悄悄扩大成 `full`。如果确实需要更广的探索，它会先完成安全且有边界的部分，说明尚未解决的问题，再征得用户同意扩大范围。
 
 ```mermaid
-flowchart LR
-    A["模糊想法"] --> B["明确产品定义"]
-    B --> C["基于证据的调研"]
-    C --> D["确定技术方向"]
-    D --> E["交接开发工作"]
+flowchart TD
+    A["你的问题或粗糙想法"] --> B{"足以回答问题的最浅深度"}
+    B --> Q["`quick`：回答一个确定事实"]
+    B --> F["`focused`：调查一个不确定性"]
+    B --> U["`full`：澄清产品"]
+    U --> T["持久化决策树与前沿"]
+    T --> R["只研究会改变结论的证据"]
+    R --> V["给出可行性结论"]
+    V --> H{"用户是否要求技术方向？"}
+    H -->|是| D["生成可追溯的开发交接"]
+    H -->|否| E["在结论处停止"]
 ```
 
-Idear 不是普通的头脑风暴提示词，不是一个只会说“应该可以”的聊天机器人，也不是直接生成代码的实现框架。它是一个严谨的**开发前研究工作流**，服务于 AI Agent。
+## 🔍 完整探索如何工作
 
-| 阶段 | Agent 会做什么 | 会留下什么 |
-| --- | --- | --- |
-| **澄清** | 用自然、聚焦的问题将口头想法收敛为清晰的产品描述。 | 目标、用户、流程、硬约束、非目标与开放问题。 |
-| **调研** | 核验真实能力与限制，研究产品、SDK、论文、标准和开源实现。 | 带来源的研究档案、竞品分析、风险登记与可行性报告。 |
-| **准备开发** | 用户决定继续后，比较技术路径并定义首个开发方向。 | MVP 范围、PoC 计划、初步架构和 AI 交接包。 |
+### 1. 用决策树澄清产品
 
-### 它替你处理的工作
+完整探索会在 `project-context.yaml` 中保存一棵依赖感知的决策树。它的前沿只包含前置条件已经确定、当前价值最高的开放问题，因此 Agent 会逐个询问真正重要的问题，而不是运行通用问卷。用户负责目标和价值选择，Agent 负责研究事实，依赖具体环境的结论则转为 PoC。
 
-- 核验所需 API、权限、协议、硬件能力或数据源是否真实存在。
-- 调研商业产品、SDK、论文、标准和 GitHub 开源实现。
-- 解释类似方案真正如何工作，而不是只列出名字。
-- 清晰区分 `verified`、`reasoned_inference` 与 `needs_poc`。
-- 找到能够最快消除最大风险的最小 PoC。
-- 为下一个开发 Agent 保留决策、来源、约束与范围。
+上游答案发生变化时，Idear 会保留历史：被替换的用户决策或约束标记为“被取代”（`superseded`），依赖它们的结论标记为“失效”（`stale`），同时列出受影响的产物并重新计算前沿。产品摘要一旦发生语义变化，后续阶段使用前必须重新确认。
 
----
+### 2. 研究决策，而不是堆积主题
 
-## 📦 一次探索会留下什么
+每项重要研究都关联一个有效的决策节点或 focused 前提，并预先说明它能改变什么决策、怎样的证据才足够，以及剩余不确定性应由什么备用 PoC 解决。Idear 优先处理硬性阻碍、能改变结论的事实、权限、安全、合规、核心能力和最大的剩余不确定性。
 
-Idear 会创建一个持续维护的项目工作区，避免重要决策只停留在聊天记录中。
+当更多证据已不太可能改变可行性结论、主要风险、技术方向、下一项 PoC 或建议行动时，研究就会停止。发现会明确区分已验证事实、推理结论与 `needs_poc`，而不会用看似自信的文字掩盖未知。
 
-```text
-docs/idear/<date>-<idea>/
-  00-raw-idea.md             # 用户最初的表述
-  01-product-definition.md   # 已确认的范围与约束
-  02-research-dossier.md     # 证据、推理和开放问题
-  03-competitor-analysis.md  # 产品与开源项目对比
-  04-risk-register.md        # 风险、缓解方案和 PoC 行动
-  05-feasibility-report.md   # 面向用户的可行性报告
-  05-feasibility-report.pdf  # 支持 PDF 时生成的报告
-  06-technical-paths.md      # 技术选项与取舍
-  07-initial-solution.md     # MVP 与初步架构
-  08-ai-handoff.md           # 交给下一个开发 Agent 的说明
-  project-context.yaml       # 机器可读的项目状态
-```
+### 3. 交接可追溯的规划输入
 
-可行性报告负责向用户解释决策；研究档案与 handoff 则负责向后续 Agent 解释决策：哪些内容已经确认、哪些边界不能改变、哪些路径已经排除，以及哪些问题仍必须通过 PoC 验证。
+只有当用户决定继续、要求比较实现路径或准备开发交接时，Stage 3 才会开始。它保留端到端可追溯关系：产品需求与用户成功条件映射到架构元素、验收标准以及测试或证据；每个有效的 `needs_poc` 前提都必须映射到 PoC 门禁，再允许相关工作继续。交接会区分候选方案、Agent 建议与用户确认的方向，并告诉下一个 Agent 哪些内容可以细化、必须保留、需要询问或必须验证。
 
----
+这些产物用于规划与验证，并不代表可以直接编写产品代码。
+
+## 📦 产物
+
+产物由路径和阶段决定。Idear 不会为了让目录看起来完整而创建空占位文件。
+
+| 路径或阶段 | 产物 |
+| --- | --- |
+| Quick | 仅在对话中回答，不创建文件。 |
+| Focused（需要或要求持久化时） | `focused-assessment.md`、`sources.yaml` |
+| Full — Stage 1：产品澄清 | `00-raw-idea.md`、`01-product-definition.md`、`decision-log.md`、`project-context.yaml` |
+| Full — Stage 2：可行性研究 | `02-research-dossier.md`、`03-competitor-analysis.md`、`04-risk-register.md`、`05-feasibility-report.md`、`sources.yaml`；在用户要求或环境支持时另生成 `05-feasibility-report.pdf` |
+| Full — Stage 3：可选开发交接 | `06-technical-paths.md`、`07-initial-solution.md`、`08-ai-handoff.md` |
+
+`project-context.yaml` 是 Full 工作区中权威的机器可读状态。面向用户的报告解释最终判断；研究档案、决策日志和交接材料则保留判断依据以及仍未解决的问题。
+
+### 继续已有工作区
+
+旧版 Idear 留下的已有 Full 工作区可能已经具备经确认的产品定义或完整研究，却没有决策树。Idear 会执行仅改变表示形式的迁移：在保留已确认需求、决策、假设、证据、历史和确认状态的同时，推导稳定节点。迁移无需重新询问已经确定的问题，并从最早未完成阶段继续。如果迁移发现新的实质冲突，仍会按正常规则使依赖项失效并要求重新确认。
 
 ## 🚀 在你的 Agent 中安装 Idear
 
 ### 直接把链接交给 Agent
 
-如果你的 Agent 支持通过 GitHub 安装 Skill，只需要将下面内容粘贴给 Codex、Claude Code 或其他兼容 Agent：
+如果你的 Agent 支持从 GitHub 安装 Skill，可以把下面这段话交给 Codex、Claude Code 或其他兼容 Agent：
 
 ```text
-请从以下地址安装 Idear Skill：
+请安装 Idear Skill：
 https://github.com/haixin-ye/skills/tree/master/skills/idear
 
-请安装完整目录，包括 references、assets 和 agents metadata。
+请安装完整目录，包括 references、assets 和 agents 元数据。
 ```
 
 ### 手动安装
 
-Idear 是一个**完整目录型 Skill**。请不要只下载 `SKILL.md`，因为调研标准、可行性报告模板和开发交接模板都位于同级目录中。
+Idear 是一个完整目录式 Skill。请**不要**只下载 `SKILL.md`：它的路由规则、研究标准、状态契约和产物模板都保存在相邻文件中。
 
 将完整的 [`skills/idear/`](skills/idear/) 目录复制到以下位置之一：
 
@@ -124,27 +117,21 @@ Idear 是一个**完整目录型 Skill**。请不要只下载 `SKILL.md`，因�
 | Codex | `.codex/skills/idear/` | `~/.codex/skills/idear/` |
 | Claude Code | `.claude/skills/idear/` | `~/.claude/skills/idear/` |
 
-安装后重启 Agent 或重新加载 Skills。
+安装后请重启 Agent 或重新加载 Skills。
 
----
-
-## 🧭 开始一次探索
+## 💬 示例请求
 
 ```text
-$idear 我有一个产品想法。在开始开发前，帮我判断它是否可行。
-```
-
-示例提示词：
-
-```text
-$idear 我想做一个会自动响应游戏事件的小工具。它在技术上是否可行，可能被什么限制？
+$idear Chrome 扩展能读取跨域 iframe 内的文本吗？
 ```
 
 ```text
-有没有人做过不经过云端中继、只在局域网使用的远控工具？请核验它们真正的架构，并判断是否还有值得做的差异化。
+$idear 只调查 macOS 是否允许这个应用采集系统音频，请给出来源和最小验证方案。
 ```
 
----
+```text
+$idear 我想做一个无需账号和云中继、只在局域网工作的远程控制工具。请帮我定义产品、判断可行性；如果可行，再准备开发交接。
+```
 
 ## 🤖 面向 Agent
 
@@ -154,4 +141,4 @@ $idear 我想做一个会自动响应游戏事件的小工具。它在技术上�
 
 本项目采用 [Apache License 2.0](LICENSE)。
 
-如果 Idear 对你有帮助，欢迎[点一个 Star](https://github.com/haixin-ye/skills)，也可以在 [GitHub Issues](https://github.com/haixin-ye/skills/issues) 分享你用它评估过的想法。
+如果 Idear 帮你避免了做错方向，欢迎为[这个仓库点一个 Star](https://github.com/haixin-ye/skills)，也可以在 [GitHub Issues](https://github.com/haixin-ye/skills/issues) 分享你评估过的想法。

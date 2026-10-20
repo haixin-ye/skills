@@ -1,31 +1,21 @@
 # 💡 Idear - Evidence-Driven Product Discovery for AI Agents
 
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-087A6B?style=flat-square)](https://agentskills.io)
-[![Workflow](https://img.shields.io/badge/Workflow-Product%20Discovery-7A5AF8?style=flat-square)](skills/idear/SKILL.md)
+[![Workflow](https://img.shields.io/badge/Workflow-Adaptive%20Product%20Discovery-7A5AF8?style=flat-square)](skills/idear/SKILL.md)
 [![Evidence](https://img.shields.io/badge/Research-Evidence--First-1F6FEB?style=flat-square)](skills/idear/SKILL.md)
 [![License](https://img.shields.io/badge/License-Apache--2.0-586069?style=flat-square)](LICENSE)
 
 **English** | [简体中文](README.zh-CN.md)
 
-
-
 ---
 
-## 💡 A Note Before Building (About Idear)
+## 💡 Know What Is Worth Building
 
 > "Before an agent writes its first line of code, it should know what is worth building."
 
-Hello, and welcome to Idear. This project began with a simple observation: most ideas do not fail because nobody can write the code. They fail because the important questions were never asked early enough.
+Ideas rarely fail because nobody can write the code. They fail because important questions were not settled early: whether the platform permits the required capability, whether an API exists, whether privacy or licensing rules block the design, and whether an existing solution already closes the supposed gap.
 
-Can the target platform actually do this? Does the required API exist? Will permissions, browser policy, networking, licensing, or privacy rules stop the project? Has someone already built the same thing, and if so, where is the real gap? A quick answer from an AI can sound convincing while quietly missing every one of those questions.
-
-Idear gives an agent a better job before implementation begins. It helps turn a rough thought into a clear product definition, researches the evidence needed to judge it, and leaves behind a record another development agent can trust. It does not replace product judgment; it makes that judgment more informed, more explicit, and much easier to carry forward.
-
-Whether you are exploring a new tool, an AI workflow, a local-first application, a developer product, or an automation that sounds just slightly impossible, Idear is designed to help you find the real answer before the project turns into a pile of code.
-
----
-
-Turn a rough product idea into a **source-backed feasibility decision** before an AI agent starts building it.
+Idear is an adaptive, evidence-first product-discovery Skill. It can answer one bounded question, investigate one technical uncertainty, or turn a rough idea into a confirmed product definition, feasibility verdict, and development handoff. It does not replace product judgment or authorize implementation; it makes decisions explicit, sourced, and reusable.
 
 ## 🚀 Try Idear in 60 Seconds
 
@@ -39,69 +29,71 @@ Then use $idear to assess this idea before implementation:
 <describe your idea here>
 ```
 
-Idear will clarify the product, verify the real APIs and constraints, compare existing solutions, and—if the idea is viable—prepare an implementation-ready handoff.
+You do not need to choose a mode. Describe the outcome you need, and Idear infers the shallowest depth that can answer reliably. You can still ask for a narrower answer, a persistent assessment, or a complete handoff.
 
-| You start with | Idear leaves you with |
-| --- | --- |
-| “Can this be built?” | A sourced feasibility verdict with blockers and unknowns |
-| “Has anyone done this?” | Competitor and open-source analysis with meaningful differences |
-| “What should I build first?” | A risk-driven PoC, MVP scope, technical paths, and AI handoff |
+## 🧭 Adaptive Depth
 
-> If Idear helps you avoid building the wrong thing, please [star the repository](https://github.com/haixin-ye/skills) so more builders can find it.
+| Internal route | Best fit | What happens | Files by default |
+| --- | --- | --- | --- |
+| `quick` | One bounded, low-risk factual question | Idear answers inline with material conditions and current evidence. | None; no workspace is created. |
+| `focused` | Exactly one named uncertainty that needs investigation | Idear researches only that uncertainty, returns a verdict, sources, and the smallest useful validation in chat by default. | None. When persistence is useful or requested, only `focused-assessment.md` and `sources.yaml`. |
+| `full` | A rough product idea, coupled decisions, hard system constraints, or a durable development handoff | Idear runs gated clarification, feasibility research, and—only when requested—technical-path preparation. | A staged workspace whose files are created only when needed. |
 
-## ✨ What Idear Does
+Idear never silently expands a `quick` or `focused` request into `full`. If broader discovery becomes necessary, it finishes the safe bounded part, explains what remains unresolved, and offers the additional scope for approval.
 
 ```mermaid
-flowchart LR
-    A["A rough idea"] --> B["Clarify the product"]
-    B --> C["Research the evidence"]
-    C --> D["Choose a direction"]
-    D --> E["Hand off to development"]
+flowchart TD
+    A["Your question or rough idea"] --> B{"Smallest sufficient depth"}
+    B --> Q["`quick`: answer a bounded fact"]
+    B --> F["`focused`: investigate one uncertainty"]
+    B --> U["`full`: clarify the product"]
+    U --> T["Persist the decision tree and frontier"]
+    T --> R["Research only verdict-changing evidence"]
+    R --> V["Give a feasibility verdict"]
+    V --> H{"User requests a technical direction?"}
+    H -->|Yes| D["Traceable development handoff"]
+    H -->|No| E["Stop after the verdict"]
 ```
 
-Idear is not a generic brainstorming prompt, a chatbot that says everything is possible, or a code-generation framework. It is a disciplined **pre-development research workflow** for AI agents.
+## 🔍 How Full Discovery Works
 
-| Stage | What the agent does | What remains after the conversation |
-| --- | --- | --- |
-| **Clarify** | Turns an informal idea into a clear product description through focused, natural questions. | Goals, users, workflow, hard constraints, non-goals, and open questions. |
-| **Research** | Verifies real capabilities and constraints; studies products, SDKs, papers, standards, and open-source implementations. | A source-backed research dossier, competitor analysis, risk register, and feasibility report. |
-| **Prepare** | After the user chooses to continue, compares technical paths and defines the first development direction. | MVP scope, PoC plan, initial architecture, and an AI handoff package. |
+### 1. Clarify through a decision tree
 
-### The work it takes off your plate
+Full discovery stores a dependency-aware decision tree in `project-context.yaml`. Its frontier contains the highest-value open questions whose prerequisites are already settled, so the agent asks one useful question at a time instead of running a generic questionnaire. The user owns goals and value choices, the agent researches facts, and environment-dependent claims become PoCs.
 
-- Checks whether the required APIs, permissions, protocols, hardware capabilities, or data sources really exist.
-- Investigates commercial products, SDKs, papers, standards, and GitHub implementations.
-- Explains how comparable solutions actually work instead of merely listing names.
-- Separates `verified` facts from `reasoned_inference` and `needs_poc` uncertainty.
-- Identifies the smallest proof of concept that can resolve the largest risk.
-- Preserves decisions, sources, constraints, and scope for the next development agent.
+When an upstream answer changes, Idear preserves history: replaced user decisions or constraints become `superseded`, dependent conclusions become `stale`, affected artifacts are named, and the frontier is recalculated. A changed product summary must be confirmed again before later stages rely on it.
 
----
+### 2. Research decisions, not topics
 
-## 📦 What You Get
+Every material research item links to an active decision node or a focused premise and states what decision it can change, what evidence is sufficient, and what fallback PoC can settle the remainder. Idear prioritizes hard blockers, verdict-changing facts, permissions, security, compliance, core capabilities, and the largest remaining uncertainties.
 
-Idear creates a durable project workspace so important decisions do not remain trapped in chat history.
+Research stops when more evidence is unlikely to change the verdict, a principal risk, the technical direction, the next PoC, or the recommended action. Findings remain visibly classified as verified facts, reasoned inferences, or `needs_poc`; uncertainty is never hidden behind a confident conclusion.
 
-```text
-docs/idear/<date>-<idea>/
-  00-raw-idea.md             # The user's original wording
-  01-product-definition.md   # Confirmed scope and constraints
-  02-research-dossier.md     # Evidence, reasoning, and open questions
-  03-competitor-analysis.md  # Product and open-source comparisons
-  04-risk-register.md        # Risks, mitigations, and PoC actions
-  05-feasibility-report.md   # Polished report for the user
-  05-feasibility-report.pdf  # Generated when PDF support is available
-  06-technical-paths.md      # Options and trade-offs
-  07-initial-solution.md     # MVP and preliminary architecture
-  08-ai-handoff.md           # Brief for the next development agent
-  project-context.yaml       # Machine-readable project state
-```
+### 3. Hand off traceable planning inputs
 
-The report explains the decision to the user. The dossier and handoff explain it to the next agent: what is confirmed, what must not change, what was ruled out, and what still needs a proof of concept.
+Stage 3 starts only when the user asks to pursue the idea, compare implementation paths, or prepare a handoff. It preserves end-to-end traceability from requirements and user success conditions to architecture elements, acceptance criteria, tests or evidence; every active `needs_poc` premise maps to a PoC gate before dependent work. The handoff distinguishes proposed, agent-recommended, and user-confirmed directions and tells the next agent what it may refine, must preserve, must ask about, or must validate.
 
----
+This is a planning and validation handoff, not permission to write product code.
 
-## 🚀 Install Idear In Your Agent
+## 📦 Artifacts
+
+Artifacts are route- and stage-dependent. Idear does not create empty placeholders merely to make a directory look complete.
+
+| Route or stage | Artifacts |
+| --- | --- |
+| Quick | Chat answer only; no files. |
+| Focused, when persistence is useful or requested | `focused-assessment.md`, `sources.yaml` |
+| Full — Stage 1: clarification | `00-raw-idea.md`, `01-product-definition.md`, `decision-log.md`, `project-context.yaml` |
+| Full — Stage 2: feasibility | `02-research-dossier.md`, `03-competitor-analysis.md`, `04-risk-register.md`, `05-feasibility-report.md`, `sources.yaml`, plus `05-feasibility-report.pdf` when requested or supported |
+| Full — Stage 3: optional handoff | `06-technical-paths.md`, `07-initial-solution.md`, `08-ai-handoff.md` |
+
+`project-context.yaml` is the authoritative machine-readable state for a Full workspace. The human-facing reports explain the decision; the dossier, decision log, and handoff preserve why it was made and what remains unresolved.
+
+### Continuing an existing workspace
+
+An existing Full workspace from an earlier Idear version may have a confirmed product definition or completed research but no decision tree. Idear performs a representation-only migration: it derives stable nodes while preserving confirmed requirements, decisions, assumptions, evidence, history, and confirmation state. It continues without re-asking settled questions and resumes at the earliest incomplete stage. A newly exposed substantive conflict still requires normal invalidation and reconfirmation.
+
+## 🚀 Install Idear in Your Agent
 
 ### Give this link to your agent
 
@@ -116,7 +108,7 @@ Install the complete directory, including references, assets, and agents metadat
 
 ### Manual installation
 
-Idear is a bundled Skill. Do **not** download `SKILL.md` by itself: its research standards, report templates, and handoff templates live beside it.
+Idear is a bundled Skill. Do **not** download `SKILL.md` by itself: its routing rules, research standards, state contracts, and output templates live beside it.
 
 Copy the complete [`skills/idear/`](skills/idear/) directory to one of these locations:
 
@@ -127,32 +119,26 @@ Copy the complete [`skills/idear/`](skills/idear/) directory to one of these loc
 
 Restart the agent or reload its Skills after installation.
 
----
-
-## 🧭 Start A Session
+## 💬 Example Requests
 
 ```text
-$idear I have a product idea. Help me determine whether it is feasible before I start building.
-```
-
-Example prompts:
-
-```text
-$idear I want to build a tool that automatically reacts to a game event. Is it technically possible, and what could block it?
+$idear Can a Chrome extension read text inside a cross-origin iframe?
 ```
 
 ```text
-Has anyone already built a LAN-only remote-control tool with no cloud relay? Verify the real architecture and tell me whether there is still a meaningful gap.
+$idear Investigate only whether macOS permits this app to capture system audio, with sources and the smallest validation.
 ```
 
----
+```text
+$idear I want to build a LAN-only remote-control tool with no accounts or cloud relay. Help me define it, test feasibility, and prepare a development handoff if it is viable.
+```
 
 ## 🤖 For Agents
 
-When an agent is given this repository, it should read [`skills/index.json`](skills/index.json), select `idear`, read [`skills/idear/SKILL.md`](skills/idear/SKILL.md), and preserve the complete `skills/idear/` directory during installation. The repository-level [AGENTS.md](AGENTS.md) defines this contract precisely.
+When an agent receives this repository, it should read [`skills/index.json`](skills/index.json), select `idear`, read [`skills/idear/SKILL.md`](skills/idear/SKILL.md), and preserve the complete `skills/idear/` directory during installation. The repository-level [AGENTS.md](AGENTS.md) defines this contract precisely.
 
 ## 📄 License
 
 Licensed under the [Apache License, Version 2.0](LICENSE).
 
-If Idear is useful to you, [give it a star](https://github.com/haixin-ye/skills) and share the idea you evaluated in [GitHub Issues](https://github.com/haixin-ye/skills/issues).
+If Idear helps you avoid building the wrong thing, [give the repository a star](https://github.com/haixin-ye/skills) or share the idea you evaluated in [GitHub Issues](https://github.com/haixin-ye/skills/issues).
