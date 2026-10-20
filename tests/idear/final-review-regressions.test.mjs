@@ -7,7 +7,10 @@ const read = (path) => readFileSync(`${root}${path}`, "utf8");
 
 const skill = read("skills/idear/SKILL.md");
 const stage2 = read("skills/idear/references/stage-2-research.md");
+const reportDesign = read("skills/idear/references/report-design.md");
 const competitor = read("skills/idear/assets/templates/competitor-analysis.md");
+const markdownReport = read("skills/idear/assets/templates/feasibility-report.md");
+const htmlReport = read("skills/idear/assets/templates/feasibility-report.html");
 const behavior = read("tests/idear/behavior-scenarios.md");
 const workflow = read(".github/workflows/validate.yml");
 const catalog = JSON.parse(read("skills/index.json"));
@@ -25,6 +28,21 @@ assert.doesNotMatch(
   fullStage2,
   /maintain `02-research-dossier\.md`, `03-competitor-analysis\.md`, `04-risk-register\.md`/i,
   "SKILL.md must not present competitor analysis as an unconditional Full Stage 2 artifact",
+);
+assert.match(
+  fullStage2,
+  /completion response[\s\S]{0,240}closest alternatives[\s\S]{0,180}only when[\s\S]{0,140}(?:active )?decision node/i,
+  "SKILL.md may require closest alternatives only for an active comparison or differentiation node",
+);
+assert.match(
+  fullStage2,
+  /(?:without|when no)[^\n]{0,160}(?:active )?decision node[^\n]{0,160}Not investigated — outside the active decision scope/i,
+  "SKILL.md completion must render a scoped omission when comparison is out of scope",
+);
+assert.match(
+  fullStage2,
+  /Not investigated — outside the active decision scope[^\n]{0,200}(?:do not|without)[^\n]{0,120}(?:competitor|comparison) research/i,
+  "SKILL.md must not perform comparison research merely to complete the response",
 );
 
 assert.match(
@@ -71,6 +89,32 @@ assert.match(
   /only include|include only|omit[^\n]{0,80}(?:comparison|row)|do not research[^\n]{0,100}irrelevant/i,
   "competitor template must not force irrelevant comparison research",
 );
+
+for (const [pattern, label] of [
+  [/(?:active )?decision node[\s\S]{0,220}`03-competitor-analysis\.md`|`03-competitor-analysis\.md`[\s\S]{0,220}(?:active )?decision node/i, "decision-linked in-scope branch"],
+  [/Not investigated — outside the active decision scope/i, "exact out-of-scope rendering"],
+  [/(?:do not|must not)[^\n]{0,160}(?:perform|start|add|create)[^\n]{0,120}(?:competitor|comparison) research|(?:competitor|comparison) research[^\n]{0,160}(?:not required|out of scope)/i, "no-research omission branch"],
+]) {
+  assert.match(reportDesign, pattern, `report design must define the ${label}`);
+}
+
+const conditionalBranch = (template, label) => {
+  const match = template.match(/\{\{#if competitor_analysis_in_scope\}\}([\s\S]*?)\{\{else\}\}([\s\S]*?)\{\{\/if\}\}/i);
+  assert.ok(match, `${label} must encode explicit in-scope and out-of-scope competitor branches`);
+  return { inScope: match[1], outOfScope: match[2] };
+};
+
+for (const [label, template, summaryPattern] of [
+  ["Markdown feasibility report", markdownReport, /\{\{competitor_summary\}\}/i],
+  ["HTML feasibility report", htmlReport, /\{\{competitor_summary_html\}\}/i],
+]) {
+  const { inScope, outOfScope } = conditionalBranch(template, label);
+  assert.match(inScope, summaryPattern, `${label} must retain the competitor summary when comparison is in scope`);
+  assert.match(inScope, /\{\{competitor_decision_node_ids\}\}/i, `${label} in-scope branch must expose governing decision nodes`);
+  assert.doesNotMatch(inScope, /Not investigated — outside the active decision scope/i, `${label} in-scope branch must not render the omission`);
+  assert.match(outOfScope, /Not investigated — outside the active decision scope/i, `${label} must explicitly render the scoped omission`);
+  assert.doesNotMatch(outOfScope, summaryPattern, `${label} out-of-scope branch must not require a competitor summary`);
+}
 
 assert.match(workflow, /uses:\s*actions\/setup-node@v4/i, "CI must install a fixed current Node runtime");
 assert.match(workflow, /node-version:\s*["']?22["']?/i, "CI must pin Node 22");
