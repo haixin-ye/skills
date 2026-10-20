@@ -91,6 +91,7 @@ These failures are the RED evidence for the v2 changes below.
 - Do not enter Stage 3 without the user's request.
 - Re-verify drift-prone facts and preserve the existing decision history.
 - Do not create or maintain `03-competitor-analysis.md` unless an active decision node requires competitor, existing-solution, or differentiation evidence; API-only research does not justify it by itself.
+- In this API-only case, the feasibility report and completion response say `Not investigated — outside the active decision scope` instead of requiring closest alternatives or silently performing comparison research.
 
 ## Scenario 6: Legacy full workspace requesting Stage 3
 

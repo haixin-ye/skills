@@ -33,7 +33,13 @@ verdict: "{{verdict}}"
 
 ## Existing Solutions And Differentiation
 
+{{#if competitor_analysis_in_scope}}
+**Governing decision nodes:** {{competitor_decision_node_ids}}
+
 {{competitor_summary}}
+{{else}}
+Not investigated — outside the active decision scope.
+{{/if}}
 
 ## Constraints And Risks
 

@@ -9,11 +9,20 @@ The feasibility report is a decision document for the user, not a transcript of 
 3. Problem and intended value
 4. Feasibility assessment
 5. Verified technical foundations
-6. Existing products and open-source comparison
+6. Existing products and open-source comparison, or its explicit scoped omission
 7. Permissions, security, and operating constraints
 8. Risks and unknowns
 9. Recommendation and next proof-of-concept
 10. Sources
+
+## Conditional comparison section
+
+Always render the section heading so the report's research scope is explicit, then render exactly one branch:
+
+- When an active decision node requires competitor, existing-solution, or differentiation evidence, render the decision-linked summary from `03-competitor-analysis.md` and show the governing node IDs.
+- When no such active decision node exists, render exactly `Not investigated — outside the active decision scope`. Competitor or comparison research is not required for this branch; do not perform or start it merely to populate the report.
+
+The omission is a scope statement, not a negative finding about alternatives. Do not present it as evidence that no competing solution exists.
 
 ## Visual direction
 
