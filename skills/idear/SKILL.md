@@ -1,176 +1,57 @@
 ---
 name: idear
-description: Turn a user's rough software, tool, automation, or AI-product idea into a clarified product definition, evidence-backed feasibility report, and implementation-ready technical handoff. Use when a user asks whether an idea can be built, whether suitable technologies/permissions/APIs exist, whether others have built it, what competing products or open-source projects exist, or how to begin if it is viable.
+description: Use when a rough software, tool, automation, or AI-product idea needs product clarification, feasibility evidence, comparison with existing solutions, or a development handoff before implementation.
 ---
 
 # Idear
 
-Idear is an adaptive-depth, evidence-first product discovery workflow. It is not a generic brainstorming skill and it is not an implementation skill. Its purpose is to answer the user's actual decision at the smallest sufficient depth, from a bounded fact through a defensible go/no-go decision and later development handoff.
+Idear is an adaptive-depth, evidence-first product-discovery workflow. Answer the user's actual decision at the smallest sufficient depth, from a bounded fact to a defensible feasibility verdict and, only when requested, a development handoff.
 
-Follow the user's language for all user-facing conversation and generated artifacts. Use concise, direct language. Distinguish verified facts from inferences and untested assumptions.
+Use Idear for product clarification, feasibility research, comparison with existing products or open-source work, and pre-implementation handoff. It does not apply to direct implementation, ordinary code review or debugging, unrelated brainstorming, or a standalone bounded factual question that can be answered directly. If Idear is explicitly invoked for that bounded question, use the `quick` route below without expanding scope.
 
 ## Route Before Creating Artifacts
 
-Before creating any file or directory, read `references/scope-routing.md` and classify the request internally as `quick`, `focused`, or `full`. Do not ask the user to select a mode. Infer the shallowest depth that can answer the request, and honor an explicit request for a narrower answer or deeper discovery.
+Read `references/scope-routing.md` before creating any file or directory. Infer the shallowest sufficient depth; do not ask the user to choose a mode.
 
 - `quick`: answer a bounded, low-risk fact inline; create no workspace by default.
-- `focused`: investigate only one named uncertainty; answer in chat by default. Create only `focused-assessment.md` and `sources.yaml` when persistence is materially useful or requested.
-- `full`: run product clarification, feasibility research, and the optional technical handoff below.
+- `focused`: investigate one named uncertainty and answer in chat by default. Persist only `focused-assessment.md` and `sources.yaml` when useful or requested.
+- `full`: run clarification, feasibility research, and the optional handoff under the gates below.
 
-Do not silently escalate a quick or focused request to full discovery. Complete the bounded request when possible, explain the unresolved broader decision, and offer full discovery. Begin it only if the original request authorized that scope or the user accepts.
+Honor an explicit request for narrower or deeper treatment. Never silently escalate `quick` or `focused` work to `full`; finish the bounded portion when possible, state what remains unresolved, and offer the broader workflow. Resume an existing workspace at its earliest incomplete stage without repeating settled discovery.
 
-Across every depth, preserve the evidence, authorization, safety, and non-implementation boundaries in this file. Never present an inference or untested assumption as verified fact.
+## Cross-Stage Invariants
 
-The stage sections below describe `full` discovery. Detect its current stage from the conversation and advance naturally. A user may add a constraint at any time; update the saved context, revisit affected conclusions, and do not retain conclusions that depended on the old constraint.
+- Follow the user's language in conversation and artifacts.
+- Preserve stated constraints and non-goals. Separate verified facts, reasoned inferences, assumptions, and PoC-dependent claims.
+- Use current authoritative evidence for drift-prone claims and keep source traceability.
+- Do not overwrite reversals or stale conclusions; preserve history and invalidate dependents as defined in `references/decision-tree.md`.
+- Keep research and actions legal, ethical, safe, and within the user's authorization. Surface permission, privacy, security, cost, and environment dependencies without implying certainty.
+- Do not begin implementation, generate product code, install dependencies, or run a PoC while using this skill. A handoff does not authorize implementation.
 
-The full stages are:
+## Full Discovery
 
-1. Product clarification
-2. Feasibility research and report
-3. Technical path and development handoff
+For `full`, create the workspace at the first applicable location: a user-specified path; `docs/idear/<YYYY-MM-DD>-<slug>/` in the active repository; otherwise `work/idear/<YYYY-MM-DD>-<slug>/`. Use a stable ASCII slug and create an artifact only when its stage needs it. Templates live in `assets/templates/`.
 
-Do not begin implementation at any depth while using this skill. If the user asks to build after Stage 3, hand off to the relevant planning or implementation workflow using the generated handoff artifacts.
+### Stage 1 — Product Clarification
 
-## Full-Discovery Artifact Location
+Read `references/decision-tree.md` and `references/stage-1-clarification.md`. Preserve the original wording in `00-raw-idea.md`, maintain the decision tree and confirmation state in `project-context.yaml`, and produce `01-product-definition.md` plus `decision-log.md`.
 
-This workspace rule applies only after routing to `full`. At the start of Stage 1, create an idea workspace. Resolve its location in this order:
+Ask only ranked frontier questions and preserve ownership: the user decides goals and values; the agent researches facts; environment-dependent claims become PoCs. Stage 1 completes only when every high-impact node is resolved or explicitly classified under the decision-tree rules and the user explicitly approves the latest summary revision. A correction or permission to use assumptions is not by itself approval of that revision.
 
-1. A path explicitly named by the user.
-2. `docs/idear/<YYYY-MM-DD>-<slug>/` in the active project repository.
-3. `work/idear/<YYYY-MM-DD>-<slug>/` when there is no project repository.
+### Stage 2 — Feasibility Research
 
-Use a short, stable ASCII slug. Do not create empty files before their stage needs them. Maintain `project-context.yaml` throughout all stages.
+Enter only from the latest confirmed product definition. Read `references/stage-2-research.md`, `references/evidence-standards.md`, and `references/report-design.md`. Link every material investigation to an active decision node or focused premise and stop when more evidence is unlikely to change the verdict, principal risks, direction, next PoC, or recommended action.
 
-## Stage 1: Product Clarification
+For `full`, maintain `02-research-dossier.md`, `03-competitor-analysis.md`, `04-risk-register.md`, `sources.yaml`, `decision-log.md`, and `project-context.yaml`; produce `05-feasibility-report.md` and a PDF when requested or supported. Lead the completion response with the verdict, decisive evidence, blockers, closest alternatives, and next action. Ask before Stage 3; feasibility alone does not authorize it.
 
-### Goal
+### Stage 3 — Technical Path And Development Handoff
 
-Convert the user's rough idea into a product definition that is concrete enough to research.
+Enter Stage 3 only when the user elects to pursue the idea, asks for an implementation approach, or requests a development handoff. Read `references/stage-3-handoff.md`. Maintain `06-technical-paths.md`, `07-initial-solution.md`, `08-ai-handoff.md`, `decision-log.md`, and `project-context.yaml`.
 
-### Required behavior
+Keep proposed, recommended, and user-confirmed directions distinct. Preserve requirement-to-architecture-to-acceptance traceability, unresolved gates, and every required PoC. Produce planning and validation artifacts only; transfer any later build request to an appropriate planning or implementation workflow.
 
-- Save the user's original wording in `00-raw-idea.md` before substantially reframing it.
-- Ask one high-leverage clarification question by default. Ask at most three in one round only when they are independent, have settled prerequisites, and are easy to answer; otherwise ask one. Do not present a survey.
-- Seek the problem, target user, operating environment, primary workflow, success condition, hard constraints, and non-goals.
-- Treat stated constraints as binding. Examples include "LAN only", "no account", "offline", "no cloud", a target platform, or a budget limit.
-- Make reasonable, clearly labelled assumptions when they do not materially change the research direction. Ask instead when an unknown would change the architecture, permissions, cost, legal posture, or feasibility conclusion.
-- Summarize periodically so the user can correct the direction.
-- Do not conduct broad feasibility research until there is a coherent product definition, except for small factual checks required to understand a term the user used.
+## Context Authority
 
-### Completion gate
+`project-context.yaml` is the authoritative machine-readable state for `full` discovery. Update it after every material clarification, finding, decision, reversal, risk, or Stage 3 state change. Preserve historical nodes and point them to replacements rather than deleting them. Keep generated artifacts synchronized with the current state and revisions.
 
-Write `01-product-definition.md`, update `project-context.yaml`, and ask the user to confirm or correct the clarified definition. The definition must state:
-
-- Problem and value proposition
-- Target users and scenarios
-- Core product behavior
-- Hard constraints
-- Explicit non-goals
-- Assumptions and open questions
-- A one-paragraph clear product description
-
-Only proceed to Stage 2 after the user explicitly approves the latest summary revision. Authorization to proceed with recorded assumptions counts only when the user at the same time explicitly approves the latest summary that displays those assumptions.
-
-Read `references/stage-1-clarification.md` before conducting Stage 1.
-
-## Stage 2: Feasibility Research And Report
-
-### Goal
-
-Determine whether the defined product is technically and practically viable, using current evidence rather than model memory.
-
-### Required research
-
-For every idea, determine which of these are relevant and investigate them:
-
-- Required platform capabilities, APIs, protocols, hardware, data sources, and integrations
-- Authentication, authorization, operating-system permissions, security, privacy, licensing, compliance, and deployment constraints
-- Existing products, commercial tools, open-source projects, SDKs, standards, and papers
-- Whether similar work actually uses the mechanism claimed for it, rather than an assumed mechanism
-- The project's differentiation from the closest existing alternatives
-- Cost, operational burden, maintenance risk, and environmental prerequisites
-- The smallest proof-of-concept that could remove the largest remaining uncertainty
-
-### Evidence rules
-
-- Browse for claims that may have changed: product capabilities, API behavior, permissions, pricing, project maintenance, policy, regulations, and availability.
-- Prefer official documentation, official repositories, specifications, source code, release notes, and primary research.
-- Use secondary sources only as supporting material and label them accordingly.
-- Never present an inference, search snippet, or unverified claim as a fact.
-- Classify material conclusions as `verified`, `reasoned_inference`, or `needs_poc`.
-- Record every meaningful source in `sources.yaml` with URL, title, source type, access date, claim supported, and confidence.
-- For each competitor or open-source project, record what it does, how it works where evidence permits, its constraints, its maintenance/licensing status, and the difference from this idea.
-
-### Completion outputs
-
-Create and update:
-
-- `02-research-dossier.md`: detailed agent-facing evidence, reasoning, and unresolved questions
-- `03-competitor-analysis.md`: comparable products and open-source projects
-- `04-risk-register.md`: risks, severity, evidence, mitigation, and validation action
-- `sources.yaml`: traceable sources
-- `05-feasibility-report.md`: polished user-facing report
-- `05-feasibility-report.pdf`: generate when a PDF capability is available or the user requests it
-- `decision-log.md` and `project-context.yaml`
-
-Always preserve the Markdown report even when a PDF is produced. Follow `references/stage-2-research.md`, `references/evidence-standards.md`, and `references/report-design.md`. Use the templates in `assets/templates/`.
-
-When producing a PDF, start from `assets/templates/feasibility-report.html` and `assets/templates/feasibility-report.css` where the available PDF workflow can render HTML/CSS. If that workflow is unavailable, use the Markdown report as the source of truth and use the available document/PDF renderer without weakening the report-design requirements.
-
-### User-facing completion response
-
-In the chat, lead with the conclusion, not research narration. State:
-
-- Overall feasibility verdict
-- The highest-impact verified facts
-- Main blockers and unknowns
-- Closest existing work and the meaningful difference
-- Recommended next action
-- Paths to the generated report and research artifacts
-
-Then ask whether the user wants to proceed to Stage 3. Do not begin Stage 3 merely because the idea is feasible.
-
-## Stage 3: Technical Path And Development Handoff
-
-### Entry gate
-
-Enter only when the user says the idea should be pursued, asks for an implementation approach, or asks for material suitable for another development agent.
-
-### Goal
-
-Research and recommend a credible initial technical direction, then package the context so a future agent can plan and build without rediscovering settled facts and constraints.
-
-### Required behavior
-
-- Research two or three viable technical paths when meaningful alternatives exist.
-- Compare each path's prerequisites, performance, complexity, cost, portability, security, maintenance burden, licensing, and fit with hard constraints.
-- Recommend one path and explain the trade-offs.
-- Define an MVP with explicit in-scope and out-of-scope behavior.
-- Define acceptance criteria and the first proof-of-concept tasks.
-- Describe a preliminary architecture: components, responsibilities, interfaces/data flow, persistent data, external services, and failure/security boundaries as applicable.
-- Do not claim a technical choice is final if the user has not accepted it. Mark it as recommended or proposed.
-
-### Completion outputs
-
-Create and update:
-
-- `06-technical-paths.md`: options and selection rationale
-- `07-initial-solution.md`: preliminary architecture, MVP, and PoC plan
-- `08-ai-handoff.md`: self-contained handoff for a later development agent or new conversation
-- `project-context.yaml`: machine-readable current state
-- `decision-log.md`
-
-Read `references/stage-3-handoff.md` before generating these artifacts.
-
-## Context Maintenance
-
-`project-context.yaml` is the authoritative machine-readable state. Update it after each material user clarification, research result, decision, reversal, or identified risk. Do not delete historical decisions; mark them superseded and point to the replacement decision.
-
-The next development agent should be instructed to read `project-context.yaml`, then `08-ai-handoff.md`, then any linked evidence before proposing implementation work.
-
-## Cross-Depth Scope And Safety
-
-- Keep research within legal, ethical, and authorized boundaries.
-- Surface security and privacy risk without giving instructions that would create unauthorized access or harm.
-- Be clear when a result depends on a user-owned test environment, paid account, private data, or administrator permission.
-- Do not create a false sense of certainty. A technically plausible project can still be too costly, blocked by permissions, or already well served by existing solutions.
+A later development agent should read `project-context.yaml`, then `08-ai-handoff.md`, then linked evidence before proposing implementation work.
