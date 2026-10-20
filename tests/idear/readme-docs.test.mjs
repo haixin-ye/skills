@@ -39,6 +39,16 @@ for (const { name, path, text } of docs) {
   check(/`focused`[\s\S]{0,700}(chat by default|默认在对话中)[\s\S]{0,700}focused-assessment\.md[\s\S]{0,220}sources\.yaml/i.test(text), `${name} README must explain Focused persistence`);
   check(/(do not need to choose|无需选择|不需要选择)[\s\S]{0,160}(mode|模式)/i.test(text), `${name} README must say users do not choose a mode`);
 
+  const singleConstraintBoundary = name === "English"
+    ? /single independently verifiable (?:permission or hard constraint|hard constraint or permission)[^.\n]{0,120}remains `focused`/i
+    : /可独立核验的单项(?:权限或硬约束|硬约束或权限)[^。\n]{0,100}仍属于 `focused`/i;
+  check(singleConstraintBoundary.test(text), `${name} README must keep a single independently verifiable permission or hard constraint Focused`);
+
+  const coordinatedConstraintBoundary = name === "English"
+    ? /hard (?:system )?constraints?[^.\n]{0,160}(?:reconciled across the product|product-wide coordination)[^.\n]{0,160}`full`/i
+    : /硬约束[^。\n]{0,160}(?:整个产品|产品级)[^。\n]{0,160}`full`/i;
+  check(coordinatedConstraintBoundary.test(text), `${name} README must reserve Full constraint routing for product-wide coordination`);
+
   check(
     [/(decision tree|决策树)/i, /(frontier|前沿)/i, /(stale|失效)/i, /(superseded|被取代)/i].every((pattern) => pattern.test(text)),
     `${name} README must explain the decision tree, frontier, and invalidation states`,

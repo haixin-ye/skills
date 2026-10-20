@@ -36,8 +36,10 @@ You do not need to choose a mode. Describe the outcome you need, and Idear infer
 | Internal route | Best fit | What happens | Files by default |
 | --- | --- | --- | --- |
 | `quick` | One bounded, low-risk factual question | Idear answers inline with material conditions and current evidence. | None; no workspace is created. |
-| `focused` | Exactly one named uncertainty that needs investigation | Idear researches only that uncertainty, returns a verdict, sources, and the smallest useful validation in chat by default. | None. When persistence is useful or requested, only `focused-assessment.md` and `sources.yaml`. |
-| `full` | A rough product idea, coupled decisions, hard system constraints, or a durable development handoff | Idear runs gated clarification, feasibility research, and—only when requested—technical-path preparation. | A staged workspace whose files are created only when needed. |
+| `focused` | Exactly one named uncertainty, including one permission or hard constraint that can be checked independently | Idear researches only that uncertainty, returns a verdict, sources, and the smallest useful validation in chat by default. | None. When persistence is useful or requested, only `focused-assessment.md` and `sources.yaml`. |
+| `full` | A rough product idea, coupled decisions, system-level hard constraints that must be reconciled across the product, or a durable development handoff | Idear runs gated clarification, feasibility research, and—only when requested—technical-path preparation. | A staged workspace whose files are created only when needed. |
+
+A single independently verifiable permission or hard constraint remains `focused`. Hard system constraints that must be reconciled across the product or require coupled trade-offs belong to `full`.
 
 Idear never silently expands a `quick` or `focused` request into `full`. If broader discovery becomes necessary, it finishes the safe bounded part, explains what remains unresolved, and offers the additional scope for approval.
 
